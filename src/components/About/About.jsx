@@ -4,14 +4,17 @@ import { useInView } from 'react-intersection-observer';
 import { useApp } from '../../context/AppContext';
 
 const About = () => {
-  const { theme } = useApp();
+  const { theme, siteData } = useApp();
   const isDark = theme === 'dark';
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
-  const stats = [
+  // استخدام البيانات من السياق
+  const about = siteData.about || {};
+  
+  const stats = about.stats || [
     { icon: FaGraduationCap, label: 'المؤهل', value: 'ليسانس آداب - قسم اللغة العربية' },
     { icon: FaChalkboardTeacher, label: 'الخبرة', value: '٥ سنوات في تدريس المرحلة الإعدادية' },
     { icon: FaCertificate, label: 'الشهادات', value: 'دبلوم تربوي - متخصص في المناهج' },
@@ -23,7 +26,7 @@ const About = () => {
       {isDark ? (
         <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/95 to-white" />
+        <div className="absolute inset-0 bg-white" />
       )}
       
       <div className={`absolute top-20 left-10 w-96 h-96 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
@@ -97,13 +100,11 @@ const About = () => {
             <div className="flex items-center gap-3 mb-4">
               <FaQuran className="text-gold text-2xl" />
               <h3 className="heading-secondary text-3xl md:text-4xl font-bold calligraphy text-theme-primary">
-                محمد أحمد عرابى
+                {about.name || 'محمد أحمد عرابى'}
               </h3>
             </div>
             <p className="text-theme-secondary text-base md:text-lg leading-relaxed mb-8">
-              معلم لغة عربية متخصص في تدريس المرحلة الإعدادية. أؤمن بأن اللغة العربية هي هويتنا
-              ووسيلة التواصل الحضاري، وأسعى دائماً لتقديم محتوى تعليمي متميز يجمع بين الأصالة
-              والمعاصرة.
+              {about.description || 'معلم لغة عربية متخصص في تدريس المرحلة الإعدادية. أؤمن بأن اللغة العربية هي هويتنا ووسيلة التواصل الحضاري، وأسعى دائماً لتقديم محتوى تعليمي متميز يجمع بين الأصالة والمعاصرة.'}
             </p>
 
             <div className="space-y-4">
