@@ -7,7 +7,7 @@ import {
   FaGraduationCap, FaArrowRight, FaSave, FaPlus, 
   FaTrash, FaYoutube, FaClock, FaDownload, FaEye, 
   FaWhatsapp, FaPhone, FaFacebook, FaInstagram, FaGlobe,
-  FaHome, FaChalkboardTeacher, FaPenFancy, FaBookOpen
+  FaHome
 } from 'react-icons/fa';
 import { useApp } from '../context/AppContext';
 
@@ -1135,7 +1135,7 @@ const SettingsManager = () => {
 };
 
 // ============================================
-// MAIN: AdminDashboard
+// MAIN: AdminDashboard - مع تنسيق صحيح
 // ============================================
 const AdminDashboard = ({ onBack }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -1176,21 +1176,30 @@ const AdminDashboard = ({ onBack }) => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-dark-primary' : 'bg-light-primary'} transition-colors duration-500 flex`}>
-      {/* Sidebar */}
-      <div className={`hidden lg:block fixed top-0 right-0 h-full w-72 ${
-        isDark ? 'bg-dark-secondary/95' : 'bg-light-secondary/95'
-      } border-l border-gold/10 z-50 transition-colors duration-500 overflow-y-auto`}>
+      {/* ===== Sidebar - ثابت على اليمين ===== */}
+      <div 
+        className={`hidden lg:block fixed top-0 right-0 h-full w-72 z-50 transition-all duration-300 overflow-y-auto ${
+          isDark ? 'bg-dark-secondary/95' : 'bg-light-secondary/95'
+        } border-l border-gold/10`}
+        style={{ transform: sidebarOpen ? 'translateX(0)' : 'translateX(100%)' }}
+      >
         <div className="p-6">
+          {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
               <FaGraduationCap className="text-2xl text-gold" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className={`font-bold text-sm truncate ${isDark ? 'text-white' : 'text-dark-text'}`}>لوحة التحكم</h3>
-              <p className={`text-xs truncate ${isDark ? 'text-dark-textMuted' : 'text-light-textMuted'}`}>محمد أحمد عرابى</p>
+              <h3 className={`font-bold text-sm truncate ${isDark ? 'text-white' : 'text-dark-text'}`}>
+                لوحة التحكم
+              </h3>
+              <p className={`text-xs truncate ${isDark ? 'text-dark-textMuted' : 'text-light-textMuted'}`}>
+                محمد أحمد عرابى
+              </p>
             </div>
           </div>
 
+          {/* Menu */}
           <nav className="space-y-1">
             {menuItems.map((item) => (
               <button
@@ -1211,6 +1220,7 @@ const AdminDashboard = ({ onBack }) => {
             ))}
           </nav>
 
+          {/* Footer Buttons */}
           <div className="absolute bottom-6 right-6 left-6 space-y-2">
             <button
               onClick={toggleTheme}
@@ -1245,7 +1255,15 @@ const AdminDashboard = ({ onBack }) => {
         </div>
       </div>
 
-      {/* Mobile Menu Button */}
+      {/* ===== Toggle Sidebar Button ===== */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="hidden lg:flex fixed top-4 right-4 z-50 p-2 rounded-xl glass-premium border border-gold/10 text-gold hover:bg-gold/10 transition-all duration-300"
+      >
+        <FaBars />
+      </button>
+
+      {/* ===== Mobile Menu Button ===== */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
         className={`lg:hidden fixed top-4 right-4 z-50 p-3 rounded-xl glass-premium border border-gold/10 text-gold`}
@@ -1253,7 +1271,7 @@ const AdminDashboard = ({ onBack }) => {
         {mobileOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      {/* Mobile Sidebar */}
+      {/* ===== Mobile Sidebar ===== */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -1322,8 +1340,12 @@ const AdminDashboard = ({ onBack }) => {
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
-      <div className="flex-1 min-h-screen">
+      {/* ===== Main Content - مع مسافة من السايد بار ===== */}
+      <div 
+        className={`flex-1 min-h-screen transition-all duration-300 ${
+          sidebarOpen ? 'lg:mr-72' : 'lg:mr-0'
+        }`}
+      >
         <div className="p-4 md:p-6 lg:p-8">
           {renderContent()}
         </div>
