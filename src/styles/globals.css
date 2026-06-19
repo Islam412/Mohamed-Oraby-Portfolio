@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: #0a0a0a;
+    color: #ffffff;
+    direction: rtl;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #0a0a0a;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #c9a84c;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d4b85a;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    background: rgba(26, 26, 26, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201, 168, 76, 0.1);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #c9a84c 0%, #f0d080 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .glow-border {
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.1);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .glow-border:hover {
+    box-shadow: 0 0 50px rgba(201, 168, 76, 0.2);
+    border-color: rgba(201, 168, 76, 0.4);
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-slow-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin-slow-reverse 15s linear infinite;
+}
