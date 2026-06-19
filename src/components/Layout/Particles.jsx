@@ -1,8 +1,19 @@
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import Particles from "react-particles";
 import { loadSlim } from "tsparticles-slim";
 
 const ParticlesBackground = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const particlesInit = useCallback(async (engine) => {
     await loadSlim(engine);
   }, []);
@@ -17,22 +28,29 @@ const ParticlesBackground = () => {
             value: "transparent",
           },
         },
-        fpsLimit: 120,
+        fpsLimit: 60,
         interactivity: {
           events: {
-            onClick: {
-              enable: true,
-              mode: "push",
-            },
             onHover: {
-              enable: true,
-              mode: "repulse",
+              enable: !isMobile,
+              mode: "grab",
+            },
+            onClick: {
+              enable: !isMobile,
+              mode: "push",
             },
             resize: true,
           },
           modes: {
+            grab: {
+              distance: 200,
+              links: {
+                opacity: 0.3,
+                color: "#c9a84c",
+              },
+            },
             push: {
-              quantity: 4,
+              quantity: 8,
             },
             repulse: {
               distance: 200,
@@ -42,45 +60,78 @@ const ParticlesBackground = () => {
         },
         particles: {
           color: {
-            value: "#c9a84c",
+            value: ["#c9a84c", "#f0d080", "#d4b85a"],
           },
           links: {
             color: "#c9a84c",
             distance: 150,
             enable: true,
-            opacity: 0.2,
+            opacity: 0.1,
             width: 1,
           },
           move: {
             direction: "none",
             enable: true,
             outModes: {
-              default: "bounce",
+              default: "out",
             },
-            random: false,
-            speed: 2,
+            random: true,
+            speed: isMobile ? 0.5 : 1.5,
             straight: false,
           },
           number: {
             density: {
               enable: true,
-              area: 800,
+              area: isMobile ? 400 : 800,
             },
-            value: 80,
+            value: isMobile ? 30 : 60,
           },
           opacity: {
-            value: 0.3,
+            value: {
+              min: 0.1,
+              max: 0.6,
+            },
+            animation: {
+              enable: true,
+              speed: 1,
+              minimumValue: 0.1,
+              sync: false,
+            },
           },
           shape: {
             type: "circle",
           },
           size: {
-            value: { min: 1, max: 3 },
+            value: {
+              min: 1,
+              max: 5,
+            },
+            animation: {
+              enable: true,
+              speed: 2,
+              minimumValue: 0.5,
+              sync: false,
+            },
+          },
+          wobble: {
+            distance: 20,
+            enable: true,
+            speed: {
+              min: 0.1,
+              max: 0.5,
+            },
+          },
+          twinkle: {
+            particles: {
+              enable: true,
+              frequency: 0.1,
+              opacity: 0.4,
+            },
           },
         },
         detectRetina: true,
       }}
-      className="fixed inset-0 -z-10"
+      className="fixed inset-0 -z-10 pointer-events-none"
     />
   );
 };

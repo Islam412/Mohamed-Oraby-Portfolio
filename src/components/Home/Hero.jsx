@@ -45,7 +45,7 @@ const Hero = () => {
               className="mb-4"
             >
               <h1 className="hero-title gradient-premium">
-                محمد عرلبي
+                محمد أحمد عرابى
               </h1>
             </motion.div>
 
@@ -131,8 +131,8 @@ const Hero = () => {
               
               <div className="relative w-80 h-80 md:w-[400px] md:h-[400px] rounded-full overflow-hidden border-4 border-gold/30 group-hover:border-gold/60 transition-all duration-500 shadow-2xl shadow-gold/10">
                 <img
-                  src="https://ui-avatars.com/api/?name=محمد+عرلبي&size=400&background=c9a84c&color=fff&font-size=0.5&bold=true"
-                  alt="محمد عرلبي"
+                  src="/assets/images/profile.jpg"
+                  alt="محمد أحمد عرابى"
                   className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-all duration-700"
                 />
                 {/* Islamic overlay */}
