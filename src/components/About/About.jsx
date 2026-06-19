@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FaGraduationCap, FaChalkboardTeacher, FaCertificate, FaAward } from 'react-icons/fa';
+import { FaGraduationCap, FaChalkboardTeacher, FaCertificate, FaAward, FaBook, FaQuran } from 'react-icons/fa';
 import { useInView } from 'react-intersection-observer';
 
 const About = () => {
@@ -16,8 +16,13 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-20 relative overflow-hidden">
+    <section id="about" className="py-24 relative overflow-hidden pattern-bg">
       <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
+      <div className="absolute top-20 left-10 w-96 h-96 bg-gold/3 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gold/3 rounded-full blur-3xl" />
+      
+      {/* زخارف عربية */}
+      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-gold/5 text-6xl font-amiri">بسم الله الرحمن الرحيم</div>
       
       <div className="container mx-auto px-4 md:px-8 relative z-10">
         <motion.div
@@ -25,52 +30,70 @@ const About = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-2">عن المدرس</h2>
-          <div className="w-20 h-1 bg-accent mx-auto rounded-full" />
+          <div className="flex items-center justify-center gap-4 mb-3">
+            <div className="w-16 h-px bg-gradient-to-l from-gold/30 to-transparent" />
+            <FaBook className="text-gold text-2xl" />
+            <div className="w-16 h-px bg-gradient-to-r from-gold/30 to-transparent" />
+          </div>
+          <h2 className="heading-primary text-4xl md:text-5xl font-bold gradient-premium mb-3 calligraphy">
+            عن المدرس
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto rounded-full" />
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Image Gallery */}
+          {/* معرض الصور */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="grid grid-cols-2 gap-4"
           >
-            <div className="col-span-2 rounded-2xl overflow-hidden glow-border">
+            <div className="col-span-2 rounded-2xl overflow-hidden gold-border">
               <img
-                src="/assets/images/teacher-1.jpg"
+                src="https://ui-avatars.com/api/?name=معلم+لغة+عربية&size=600&background=1a1a1a&color=c9a84c&font-size=0.4"
                 alt="المدرس"
                 className="w-full h-64 object-cover hover:scale-105 transition-all duration-500"
               />
             </div>
-            <div className="rounded-2xl overflow-hidden glow-border">
+            <div className="rounded-2xl overflow-hidden gold-border relative">
               <img
-                src="/assets/images/teacher-2.jpg"
+                src="https://ui-avatars.com/api/?name=تدريس+النحو&size=400&background=1a1a1a&color=c9a84c&font-size=0.3"
                 alt="المدرس"
                 className="w-full h-48 object-cover hover:scale-105 transition-all duration-500"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-all duration-300 flex items-end p-3">
+                <span className="text-xs text-gold font-semibold">تدريس النحو</span>
+              </div>
             </div>
-            <div className="rounded-2xl overflow-hidden glow-border">
+            <div className="rounded-2xl overflow-hidden gold-border relative">
               <img
-                src="/assets/images/teacher-3.jpg"
+                src="https://ui-avatars.com/api/?name=اللغة+العربية&size=400&background=1a1a1a&color=c9a84c&font-size=0.3"
                 alt="المدرس"
                 className="w-full h-48 object-cover hover:scale-105 transition-all duration-500"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-all duration-300 flex items-end p-3">
+                <span className="text-xs text-gold font-semibold">اللغة العربية</span>
+              </div>
             </div>
           </motion.div>
 
-          {/* Content */}
+          {/* المحتوى */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-right"
           >
-            <h3 className="text-2xl font-bold mb-4">محمد أحمد عرلبي</h3>
-            <p className="text-gray-300 leading-relaxed mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <FaQuran className="text-gold text-2xl" />
+              <h3 className="heading-secondary text-3xl md:text-4xl font-bold calligraphy text-white">
+                محمد أحمد عرلبي
+              </h3>
+            </div>
+            <p className="text-textSecondary text-base md:text-lg leading-relaxed mb-8">
               معلم لغة عربية متخصص في تدريس المرحلة الإعدادية. أؤمن بأن اللغة العربية هي هويتنا
               ووسيلة التواصل الحضاري، وأسعى دائماً لتقديم محتوى تعليمي متميز يجمع بين الأصالة
               والمعاصرة.
@@ -83,12 +106,14 @@ const About = () => {
                   initial={{ opacity: 0, x: 30 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-                  className="flex items-center gap-4 p-4 rounded-xl glass-effect hover:glow-border transition-all duration-300"
+                  className="flex items-center gap-4 p-4 rounded-xl glass-premium group"
                 >
-                  <stat.icon className="text-2xl text-accent" />
+                  <div className="p-3 rounded-lg bg-gold/10 group-hover:bg-gold/20 transition-all duration-300">
+                    <stat.icon className="text-2xl text-gold" />
+                  </div>
                   <div>
-                    <div className="text-sm text-gray-400">{stat.label}</div>
-                    <div className="font-semibold">{stat.value}</div>
+                    <div className="text-sm text-textMuted">{stat.label}</div>
+                    <div className="font-semibold text-white">{stat.value}</div>
                   </div>
                 </motion.div>
               ))}
