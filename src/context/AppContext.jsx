@@ -288,7 +288,7 @@ const defaultData = {
     siteName: 'محمد أحمد عرابى',
     siteDescription: 'مدرس لغة عربية للمرحلة الإعدادية',
     primaryColor: '#c9a84c',
-    theme: 'dark', // 'dark' | 'light'
+    theme: 'dark',
     socialLinks: {
       whatsapp: 'https://wa.me/201140739030',
       phone: 'tel:+201140739030',
@@ -300,33 +300,53 @@ const defaultData = {
 };
 
 export const AppProvider = ({ children }) => {
-  const [siteData, setSiteData] = useState(() => {
-    const saved = localStorage.getItem('siteData');
-    return saved ? JSON.parse(saved) : defaultData;
-  });
+  // تحميل البيانات من localStorage أو استخدام البيانات الافتراضية
+  const loadData = () => {
+    try {
+      const saved = localStorage.getItem('siteData');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // دمج البيانات المحفوظة مع البيانات الافتراضية للتأكد من وجود جميع الحقول
+        return {
+          ...defaultData,
+          ...parsed,
+          about: { ...defaultData.about, ...parsed.about },
+          hero: { ...defaultData.hero, ...parsed.hero },
+          courses: parsed.courses || defaultData.courses,
+          videos: parsed.videos || defaultData.videos,
+          materials: parsed.materials || defaultData.materials,
+          gallery: parsed.gallery || defaultData.gallery,
+          exams: parsed.exams || defaultData.exams,
+          settings: { ...defaultData.settings, ...parsed.settings },
+        };
+      }
+    } catch (error) {
+      console.error('Error loading data from localStorage:', error);
+    }
+    return defaultData;
+  };
 
+  const [siteData, setSiteData] = useState(loadData);
   const [isAdmin, setIsAdmin] = useState(() => {
     return localStorage.getItem('isAdmin') === 'true';
   });
-
   const [loading, setLoading] = useState(false);
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) return savedTheme;
-    // التحقق من تفضيلات النظام
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return 'dark';
     }
     return 'light';
   });
 
+  // حفظ البيانات في localStorage عند التغيير
   useEffect(() => {
     localStorage.setItem('siteData', JSON.stringify(siteData));
   }, [siteData]);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
-    // تطبيق الثيم على جذر الصفحة
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
       document.documentElement.classList.remove('light');
@@ -340,118 +360,186 @@ export const AppProvider = ({ children }) => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
-  // دوال لإدارة المحتوى
+  // دوال لإدارة المحتوى - مع تحديث فوري
   const updateAbout = (data) => {
-    setSiteData(prev => ({ ...prev, about: { ...prev.about, ...data } }));
+    setSiteData(prev => {
+      const newData = { ...prev, about: { ...prev.about, ...data } };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const updateHero = (data) => {
-    setSiteData(prev => ({ ...prev, hero: { ...prev.hero, ...data } }));
+    setSiteData(prev => {
+      const newData = { ...prev, hero: { ...prev.hero, ...data } };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const addCourse = (course) => {
-    setSiteData(prev => ({
-      ...prev,
-      courses: [...prev.courses, { ...course, id: Date.now() }]
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        courses: [...prev.courses, { ...course, id: Date.now() }]
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const updateCourse = (id, data) => {
-    setSiteData(prev => ({
-      ...prev,
-      courses: prev.courses.map(c => c.id === id ? { ...c, ...data } : c)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        courses: prev.courses.map(c => c.id === id ? { ...c, ...data } : c)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const deleteCourse = (id) => {
-    setSiteData(prev => ({
-      ...prev,
-      courses: prev.courses.filter(c => c.id !== id)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        courses: prev.courses.filter(c => c.id !== id)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const addVideo = (video) => {
-    setSiteData(prev => ({
-      ...prev,
-      videos: [...prev.videos, { ...video, id: Date.now() }]
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        videos: [...prev.videos, { ...video, id: Date.now() }]
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const updateVideo = (id, data) => {
-    setSiteData(prev => ({
-      ...prev,
-      videos: prev.videos.map(v => v.id === id ? { ...v, ...data } : v)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        videos: prev.videos.map(v => v.id === id ? { ...v, ...data } : v)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const deleteVideo = (id) => {
-    setSiteData(prev => ({
-      ...prev,
-      videos: prev.videos.filter(v => v.id !== id)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        videos: prev.videos.filter(v => v.id !== id)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const addMaterial = (material) => {
-    setSiteData(prev => ({
-      ...prev,
-      materials: [...prev.materials, { ...material, id: Date.now() }]
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        materials: [...prev.materials, { ...material, id: Date.now() }]
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const updateMaterial = (id, data) => {
-    setSiteData(prev => ({
-      ...prev,
-      materials: prev.materials.map(m => m.id === id ? { ...m, ...data } : m)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        materials: prev.materials.map(m => m.id === id ? { ...m, ...data } : m)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const deleteMaterial = (id) => {
-    setSiteData(prev => ({
-      ...prev,
-      materials: prev.materials.filter(m => m.id !== id)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        materials: prev.materials.filter(m => m.id !== id)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const addGalleryImage = (image) => {
-    setSiteData(prev => ({
-      ...prev,
-      gallery: [...prev.gallery, { ...image, id: Date.now() }]
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        gallery: [...prev.gallery, { ...image, id: Date.now() }]
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const deleteGalleryImage = (id) => {
-    setSiteData(prev => ({
-      ...prev,
-      gallery: prev.gallery.filter(g => g.id !== id)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        gallery: prev.gallery.filter(g => g.id !== id)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const addExam = (exam) => {
-    setSiteData(prev => ({
-      ...prev,
-      exams: [...prev.exams, { ...exam, id: Date.now() }]
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        exams: [...prev.exams, { ...exam, id: Date.now() }]
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const updateExam = (id, data) => {
-    setSiteData(prev => ({
-      ...prev,
-      exams: prev.exams.map(e => e.id === id ? { ...e, ...data } : e)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        exams: prev.exams.map(e => e.id === id ? { ...e, ...data } : e)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const deleteExam = (id) => {
-    setSiteData(prev => ({
-      ...prev,
-      exams: prev.exams.filter(e => e.id !== id)
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        exams: prev.exams.filter(e => e.id !== id)
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const updateSettings = (data) => {
-    setSiteData(prev => ({
-      ...prev,
-      settings: { ...prev.settings, ...data }
-    }));
+    setSiteData(prev => {
+      const newData = {
+        ...prev,
+        settings: { ...prev.settings, ...data }
+      };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const login = (password) => {
@@ -472,7 +560,14 @@ export const AppProvider = ({ children }) => {
     if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات؟')) {
       setSiteData(defaultData);
       localStorage.setItem('siteData', JSON.stringify(defaultData));
+      // إعادة تحميل الصفحة لتحديث الموقع
+      window.location.reload();
     }
+  };
+
+  // دالة لإعادة تحميل البيانات من localStorage
+  const refreshData = () => {
+    setSiteData(loadData());
   };
 
   return (
@@ -502,6 +597,7 @@ export const AppProvider = ({ children }) => {
       login,
       logout,
       resetData,
+      refreshData,
       setLoading,
     }}>
       {children}
