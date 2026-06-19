@@ -3,15 +3,26 @@ import { FaWhatsapp, FaPhone, FaFacebook, FaInstagram, FaYoutube, FaStar, FaBook
 import { useApp } from '../../context/AppContext';
 
 const Hero = () => {
-  const { theme } = useApp();
+  const { theme, siteData } = useApp();
   const isDark = theme === 'dark';
   
-  const socialLinks = [
-    { icon: FaWhatsapp, url: 'https://wa.me/201140739030', color: '#25D366', label: 'واتساب' },
-    { icon: FaPhone, url: 'tel:+201140739030', color: '#c9a84c', label: 'اتصال' },
-    { icon: FaFacebook, url: 'https://www.facebook.com/share/18pihwFGkc/', color: '#1877F2', label: 'فيسبوك' },
-    { icon: FaInstagram, url: 'https://www.instagram.com/mohamedahmedebrahiem', color: '#E4405F', label: 'انستجرام' },
-    { icon: FaYoutube, url: '#', color: '#FF0000', label: 'يوتيوب' },
+  // استخدام البيانات من السياق
+  const hero = siteData.hero || {};
+  const settings = siteData.settings || {};
+  const socialLinks = settings.socialLinks || {};
+  
+  const socialButtons = [
+    { icon: FaWhatsapp, url: socialLinks.whatsapp || 'https://wa.me/201140739030', color: '#25D366', label: 'واتساب' },
+    { icon: FaPhone, url: socialLinks.phone || 'tel:+201140739030', color: '#c9a84c', label: 'اتصال' },
+    { icon: FaFacebook, url: socialLinks.facebook || 'https://www.facebook.com/share/18pihwFGkc/', color: '#1877F2', label: 'فيسبوك' },
+    { icon: FaInstagram, url: socialLinks.instagram || 'https://www.instagram.com/mohamedahmedebrahiem', color: '#E4405F', label: 'انستجرام' },
+    { icon: FaYoutube, url: socialLinks.youtube || '#', color: '#FF0000', label: 'يوتيوب' },
+  ];
+
+  const heroStats = hero.stats || [
+    { icon: FaUsers, value: '+٥٠٠', label: 'طالب' },
+    { icon: FaBookOpen, value: '+١٠٠', label: 'فيديو شرح' },
+    { icon: FaStar, value: '+٥', label: 'سنوات خبرة' },
   ];
 
   return (
@@ -47,7 +58,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="hero-title gradient-premium mb-4"
             >
-              محمد أحمد عرابى
+              {hero.title || 'محمد أحمد عرابى'}
             </motion.h1>
 
             <motion.p
@@ -56,7 +67,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-2xl md:text-3xl text-gold font-semibold mb-4 calligraphy"
             >
-              مدرس لغة عربية للمرحلة الإعدادية
+              {hero.subtitle || 'مدرس لغة عربية للمرحلة الإعدادية'}
             </motion.p>
 
             <motion.p
@@ -65,7 +76,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               className={`text-theme-secondary max-w-xl mr-auto mb-10 leading-relaxed text-base md:text-lg`}
             >
-              أهلاً بكم في موقعي التعليمي. هنا ستجدون كل ما تحتاجونه لإتقان اللغة العربية من شروحات، ملازم، وفيديوهات تعليمية متميزة.
+              {hero.description || 'أهلاً بكم في موقعي التعليمي. هنا ستجدون كل ما تحتاجونه لإتقان اللغة العربية من شروحات، ملازم، وفيديوهات تعليمية متميزة.'}
             </motion.p>
 
             <motion.div
@@ -74,7 +85,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-wrap gap-3 mb-12"
             >
-              {socialLinks.map((social, index) => (
+              {socialButtons.map((social, index) => (
                 <a
                   key={index}
                   href={social.url}
@@ -96,29 +107,17 @@ const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex gap-8"
+              className="flex gap-8 flex-wrap"
             >
-              <div className={`stat-card text-center ${isDark ? '' : 'bg-white/90 border-gold/20 shadow-sm'}`}>
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <FaUsers className="text-gold/50" />
-                  <span className="text-3xl font-bold gradient-premium">+٥٠٠</span>
+              {heroStats.map((stat, index) => (
+                <div key={index} className={`stat-card text-center ${isDark ? '' : 'bg-white/90 border-gold/20 shadow-sm'}`}>
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    {stat.icon && <stat.icon className="text-gold/50" />}
+                    <span className="text-3xl font-bold gradient-premium">{stat.value}</span>
+                  </div>
+                  <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>{stat.label}</div>
                 </div>
-                <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>طالب</div>
-              </div>
-              <div className={`stat-card text-center ${isDark ? '' : 'bg-white/90 border-gold/20 shadow-sm'}`}>
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <FaBookOpen className="text-gold/50" />
-                  <span className="text-3xl font-bold gradient-premium">+١٠٠</span>
-                </div>
-                <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>فيديو شرح</div>
-              </div>
-              <div className={`stat-card text-center ${isDark ? '' : 'bg-white/90 border-gold/20 shadow-sm'}`}>
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <FaStar className="text-gold/50" />
-                  <span className="text-3xl font-bold gradient-premium">+٥</span>
-                </div>
-                <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>سنوات خبرة</div>
-              </div>
+              ))}
             </motion.div>
           </div>
 
