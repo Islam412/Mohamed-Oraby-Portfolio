@@ -34,7 +34,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4"
             >
-              <span className="gradient-text">محمد عرلبي</span>
+              <span className="gradient-text">محمد أحمد عرابى</span>
             </motion.h1>
 
             <motion.p
@@ -107,7 +107,11 @@ const Hero = () => {
               
               <div className="relative w-72 h-72 md:w-96 md:h-96 rounded-full overflow-hidden border-4 border-accent/30 group-hover:border-accent/60 transition-all duration-500 bg-gradient-to-br from-accent/10 to-primary">
                 <div className="w-full h-full flex items-center justify-center text-6xl text-accent/50">
-                  👨‍🏫
+                      <img
+                            src="/assets/images/profile.jpg"  // المسار الصحيح للصورة
+                            alt="محمد عرابي"
+                            className="w-full h-full object-cover"
+                        />
                 </div>
               </div>
               

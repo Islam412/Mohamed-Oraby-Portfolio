@@ -36,7 +36,7 @@ const Navbar = () => {
           transition={{ duration: 0.5 }}
           className="flex items-center gap-2"
         >
-          <span className="text-2xl font-bold gradient-text">محمد عرلبي</span>
+          <span className="text-2xl font-bold gradient-text">محمد أحمد عرابى</span>
           <span className="text-xs text-gray-400 hidden sm:inline">| مدرس لغة عربية</span>
         </motion.div>
 
