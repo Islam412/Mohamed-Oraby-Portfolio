@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FaCheck, FaTimes, FaStar, FaBookOpen, FaArrowLeft, 
-  FaArrowRight, FaClock, FaTrophy, FaAward, 
-  FaGraduationCap, FaMedal, FaCertificate, FaRocket 
+  FaCheck, FaStar, FaBookOpen, FaArrowLeft, 
+  FaArrowRight, FaGraduationCap, FaClipboardList
 } from 'react-icons/fa';
 import { useApp } from '../../context/AppContext';
-import { examsData, getExamById } from '../../data/examsData';
 
 const Exams = () => {
-  const { theme } = useApp();
+  const { theme, siteData } = useApp();
   const isDark = theme === 'dark';
-  const [currentExam, setCurrentExam] = useState(null);
+  const [currentExamId, setCurrentExamId] = useState(null);
   const [answers, setAnswers] = useState({});
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [examStarted, setExamStarted] = useState(false);
 
-  const exam = currentExam ? getExamById(currentExam) : null;
+  // استخدام البيانات من السياق
+  const exams = siteData.exams || [];
+  
+  const exam = exams.find(e => e.id === currentExamId);
   const totalQuestions = exam?.questions?.length || 0;
   const answeredCount = Object.keys(answers).length;
 
@@ -110,7 +110,7 @@ const Exams = () => {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {!currentExam && (
+          {!currentExamId && (
             <motion.div
               key="list"
               initial={{ opacity: 0, y: 20 }}
@@ -118,17 +118,16 @@ const Exams = () => {
               exit={{ opacity: 0, y: -20 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
-              {examsData.map((exam) => (
+              {exams.map((exam) => (
                 <motion.div
                   key={exam.id}
                   whileHover={{ y: -8 }}
                   className="group relative cursor-pointer"
                   onClick={() => {
-                    setCurrentExam(exam.id);
+                    setCurrentExamId(exam.id);
                     setShowResult(false);
                     setAnswers({});
                     setCurrentQuestion(0);
-                    setExamStarted(false);
                   }}
                 >
                   <div className={`absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${isDark ? '' : 'opacity-30 group-hover:opacity-80'}`} />
@@ -150,7 +149,7 @@ const Exams = () => {
                       </p>
                       <div className="flex items-center justify-between">
                         <span className={`text-xs ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>
-                          {exam.questions.length} أسئلة
+                          {exam.questions?.length || 0} أسئلة
                         </span>
                         <span className="text-xs px-3 py-1 rounded-full bg-gold/10 text-gold group-hover:bg-gold/20 transition-all duration-300">
                           ابدأ الآن →
@@ -163,7 +162,7 @@ const Exams = () => {
             </motion.div>
           )}
 
-          {currentExam && exam && !showResult && (
+          {currentExamId && exam && !showResult && (
             <motion.div
               key="exam"
               initial={{ opacity: 0, y: 20 }}
@@ -364,7 +363,7 @@ const Exams = () => {
                 <div className="flex flex-wrap items-center justify-center gap-4">
                   <button
                     onClick={() => {
-                      setCurrentExam(null);
+                      setCurrentExamId(null);
                       setShowResult(false);
                       setAnswers({});
                       setCurrentQuestion(0);
@@ -392,6 +391,14 @@ const Exams = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {exams.length === 0 && !currentExamId && (
+          <div className="text-center py-20 text-theme-muted">
+            <FaClipboardList className="text-6xl mx-auto mb-4 opacity-30" />
+            <p>لا توجد امتحانات متاحة حالياً</p>
+            <p className="text-sm">سيتم إضافة امتحانات قريباً</p>
+          </div>
+        )}
       </div>
     </section>
   );

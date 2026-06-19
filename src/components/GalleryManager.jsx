@@ -7,6 +7,7 @@ const GalleryManager = () => {
   const isDark = theme === 'dark';
   const [showAddForm, setShowAddForm] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef(null);
 
   const [newImage, setNewImage] = useState({
@@ -14,45 +15,83 @@ const GalleryManager = () => {
     category: 'طلاب',
     date: new Date().getFullYear().toString(),
     src: '',
+    fileName: '',
   });
 
   const categories = ['طلاب', 'تدريس', 'ورش', 'إنجازات', 'رحلات'];
 
-  // دالة لتحويل الصورة إلى Base64
+  // دالة لرفع الصورة مع معاينة
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // التحقق من نوع الملف
+      if (!file.type.startsWith('image/')) {
+        alert('يرجى اختيار ملف صورة فقط (jpg, png, gif, etc.)');
+        e.target.value = '';
+        return;
+      }
+
       setUploading(true);
+      setUploadProgress(0);
+
+      // محاكاة تقدم الرفع
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+        }
+        setUploadProgress(Math.min(progress, 100));
+      }, 100);
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        setNewImage({ ...newImage, src: reader.result });
+        setNewImage(prev => ({
+          ...prev,
+          src: reader.result,
+          fileName: file.name,
+        }));
         setUploading(false);
+        setUploadProgress(100);
+        clearInterval(interval);
+      };
+      reader.onerror = () => {
+        setUploading(false);
+        alert('حدث خطأ أثناء رفع الصورة');
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleAddImage = () => {
-    if (newImage.title && newImage.src) {
-      addGalleryImage({
-        ...newImage,
-        // إذا كانت الصورة من الجهاز، نخزنها كـ Base64
-        src: newImage.src,
-      });
-      setNewImage({
-        title: '',
-        category: 'طلاب',
-        date: new Date().getFullYear().toString(),
-        src: '',
-      });
-      setShowAddForm(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-      alert('تم إضافة الصورة بنجاح!');
-    } else {
-      alert('يرجى إدخال عنوان الصورة واختيار ملف');
+    if (!newImage.title) {
+      alert('يرجى إدخال عنوان الصورة');
+      return;
     }
+    if (!newImage.src) {
+      alert('يرجى اختيار صورة');
+      return;
+    }
+
+    addGalleryImage({
+      ...newImage,
+      id: Date.now(),
+    });
+
+    setNewImage({
+      title: '',
+      category: 'طلاب',
+      date: new Date().getFullYear().toString(),
+      src: '',
+      fileName: '',
+    });
+    setShowAddForm(false);
+    setUploadProgress(0);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    alert('تم إضافة الصورة بنجاح!');
   };
 
   const handleDelete = (id) => {
@@ -83,6 +122,7 @@ const GalleryManager = () => {
                 value={newImage.title}
                 onChange={(e) => setNewImage({ ...newImage, title: e.target.value })}
                 className="w-full px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none"
+                placeholder="مثال: مع الطلاب"
               />
             </div>
             <div>
@@ -99,28 +139,47 @@ const GalleryManager = () => {
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm mb-1 text-theme-muted">رفع صورة من الجهاز</label>
-              <div className="flex items-center gap-4">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className={`flex-1 px-4 py-2 rounded-xl border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none ${
-                    isDark ? 'glass-premium' : 'bg-white'
-                  }`}
-                />
-                {uploading && <FaSpinner className="animate-spin text-gold text-xl" />}
-              </div>
-              {newImage.src && (
-                <div className="mt-3">
-                  <img 
-                    src={newImage.src} 
-                    alt="معاينة" 
-                    className="w-32 h-32 object-cover rounded-xl border border-gold/20"
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-4">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className={`flex-1 px-4 py-2 rounded-xl border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none ${
+                      isDark ? 'glass-premium' : 'bg-white'
+                    }`}
                   />
-                  <p className="text-xs text-theme-muted mt-1">تم رفع الصورة بنجاح ✅</p>
+                  {uploading && <FaSpinner className="animate-spin text-gold text-xl" />}
                 </div>
-              )}
+
+                {/* شريط تقدم الرفع */}
+                {uploading && (
+                  <div className="w-full">
+                    <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-gold to-goldLight rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-theme-muted mt-1">جاري الرفع... {Math.round(uploadProgress)}%</p>
+                  </div>
+                )}
+
+                {newImage.src && !uploading && (
+                  <div className="flex items-center gap-4 p-3 rounded-xl bg-green-500/10 border border-green-500/20">
+                    <img 
+                      src={newImage.src} 
+                      alt="معاينة" 
+                      className="w-20 h-20 object-cover rounded-xl border border-gold/20"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm text-theme-primary font-semibold">{newImage.fileName || 'صورة'}</p>
+                      <p className="text-xs text-theme-muted">تم رفع الصورة بنجاح ✅</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex gap-3 mt-4">
@@ -134,7 +193,14 @@ const GalleryManager = () => {
             <button
               onClick={() => {
                 setShowAddForm(false);
-                setNewImage({ title: '', category: 'طلاب', date: new Date().getFullYear().toString(), src: '' });
+                setNewImage({
+                  title: '',
+                  category: 'طلاب',
+                  date: new Date().getFullYear().toString(),
+                  src: '',
+                  fileName: '',
+                });
+                setUploadProgress(0);
                 if (fileInputRef.current) fileInputRef.current.value = '';
               }}
               className="px-6 py-2 rounded-xl bg-white/5 text-theme-muted hover:bg-white/10 transition-all duration-300"
@@ -152,9 +218,8 @@ const GalleryManager = () => {
               <img
                 src={image.src}
                 alt={image.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
                 onError={(e) => {
-                  // إذا كانت الصورة من رابط خارجي فاشل، نستخدم placeholder
                   if (!image.src.startsWith('data:image')) {
                     e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(image.title)}&size=400&background=1a1a1a&color=c9a84c`;
                   }
@@ -172,6 +237,11 @@ const GalleryManager = () => {
             >
               <FaTrash className="text-xs" />
             </button>
+            {image.src && image.src.startsWith('data:image') && (
+              <div className="absolute top-2 left-2 px-2 py-1 rounded-lg bg-green-500/80 text-white text-[10px]">
+                📁 محلي
+              </div>
+            )}
           </div>
         ))}
       </div>
