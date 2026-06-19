@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { FaPlus, FaTrash, FaImages } from 'react-icons/fa';
+import React, { useState, useRef } from 'react';
+import { FaPlus, FaTrash, FaImages, FaUpload, FaSpinner } from 'react-icons/fa';
 import { useApp } from '../../context/AppContext';
 
 const GalleryManager = () => {
   const { siteData, addGalleryImage, deleteGalleryImage, theme } = useApp();
+  const isDark = theme === 'dark';
   const [showAddForm, setShowAddForm] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const [newImage, setNewImage] = useState({
     title: '',
@@ -15,9 +18,27 @@ const GalleryManager = () => {
 
   const categories = ['طلاب', 'تدريس', 'ورش', 'إنجازات', 'رحلات'];
 
+  // دالة لتحويل الصورة إلى Base64
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploading(true);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewImage({ ...newImage, src: reader.result });
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddImage = () => {
     if (newImage.title && newImage.src) {
-      addGalleryImage(newImage);
+      addGalleryImage({
+        ...newImage,
+        // إذا كانت الصورة من الجهاز، نخزنها كـ Base64
+        src: newImage.src,
+      });
       setNewImage({
         title: '',
         category: 'طلاب',
@@ -25,7 +46,12 @@ const GalleryManager = () => {
         src: '',
       });
       setShowAddForm(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       alert('تم إضافة الصورة بنجاح!');
+    } else {
+      alert('يرجى إدخال عنوان الصورة واختيار ملف');
     }
   };
 
@@ -43,8 +69,7 @@ const GalleryManager = () => {
           onClick={() => setShowAddForm(!showAddForm)}
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gold/10 text-gold hover:bg-gold/20 transition-all duration-300"
         >
-          <FaPlus />
-          إضافة صورة
+          <FaPlus /> إضافة صورة
         </button>
       </div>
 
@@ -73,25 +98,45 @@ const GalleryManager = () => {
               </select>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm mb-1 text-theme-muted">رابط الصورة</label>
-              <input
-                type="text"
-                value={newImage.src}
-                onChange={(e) => setNewImage({ ...newImage, src: e.target.value })}
-                placeholder="/assets/images/with-students/1.jpg"
-                className="w-full px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none"
-              />
+              <label className="block text-sm mb-1 text-theme-muted">رفع صورة من الجهاز</label>
+              <div className="flex items-center gap-4">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className={`flex-1 px-4 py-2 rounded-xl border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none ${
+                    isDark ? 'glass-premium' : 'bg-white'
+                  }`}
+                />
+                {uploading && <FaSpinner className="animate-spin text-gold text-xl" />}
+              </div>
+              {newImage.src && (
+                <div className="mt-3">
+                  <img 
+                    src={newImage.src} 
+                    alt="معاينة" 
+                    className="w-32 h-32 object-cover rounded-xl border border-gold/20"
+                  />
+                  <p className="text-xs text-theme-muted mt-1">تم رفع الصورة بنجاح ✅</p>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex gap-3 mt-4">
             <button
               onClick={handleAddImage}
-              className="px-6 py-2 rounded-xl bg-gold text-black font-bold hover:shadow-xl hover:shadow-gold/20 transition-all duration-300"
+              disabled={!newImage.src || uploading}
+              className="px-6 py-2 rounded-xl bg-gold text-black font-bold hover:shadow-xl hover:shadow-gold/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              إضافة
+              {uploading ? 'جاري الرفع...' : 'إضافة'}
             </button>
             <button
-              onClick={() => setShowAddForm(false)}
+              onClick={() => {
+                setShowAddForm(false);
+                setNewImage({ title: '', category: 'طلاب', date: new Date().getFullYear().toString(), src: '' });
+                if (fileInputRef.current) fileInputRef.current.value = '';
+              }}
               className="px-6 py-2 rounded-xl bg-white/5 text-theme-muted hover:bg-white/10 transition-all duration-300"
             >
               إلغاء
@@ -109,7 +154,10 @@ const GalleryManager = () => {
                 alt={image.title}
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(image.title)}&size=400&background=1a1a1a&color=c9a84c`;
+                  // إذا كانت الصورة من رابط خارجي فاشل، نستخدم placeholder
+                  if (!image.src.startsWith('data:image')) {
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(image.title)}&size=400&background=1a1a1a&color=c9a84c`;
+                  }
                 }}
               />
             </div>
@@ -132,6 +180,7 @@ const GalleryManager = () => {
         <div className="text-center py-12 text-theme-muted">
           <FaImages className="text-6xl mx-auto mb-4 opacity-30" />
           <p>لا توجد صور حالياً</p>
+          <p className="text-sm">اضغط على "إضافة صورة" لرفع صورة من جهازك</p>
         </div>
       )}
     </div>
