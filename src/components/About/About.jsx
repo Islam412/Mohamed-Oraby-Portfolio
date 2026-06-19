@@ -20,16 +20,16 @@ const About = () => {
 
   return (
     <section id="about" className="py-24 relative overflow-hidden pattern-bg">
-      <div className={`absolute inset-0 bg-gradient-to-b ${
-        isDark 
-          ? 'from-primary via-secondary/50 to-primary' 
-          : 'from-light-primary via-light-secondary/50 to-light-primary'
-      }`} />
+      {isDark ? (
+        <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/95 to-white" />
+      )}
       
-      <div className="absolute top-20 left-10 w-96 h-96 bg-gold/3 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gold/3 rounded-full blur-3xl" />
+      <div className={`absolute top-20 left-10 w-96 h-96 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
+      <div className={`absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
       
-      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-gold/5 text-6xl font-amiri">
+      <div className={`absolute top-10 left-1/2 transform -translate-x-1/2 text-6xl font-amiri ${isDark ? 'text-gold/5' : 'text-gold/10'}`}>
         بسم الله الرحمن الرحيم
       </div>
       
@@ -113,13 +113,19 @@ const About = () => {
                   initial={{ opacity: 0, x: 30 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-                  className="flex items-center gap-4 p-4 rounded-xl glass-premium group"
+                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 ${
+                    isDark 
+                      ? 'glass-premium group' 
+                      : 'bg-white/90 border-gold/20 shadow-sm hover:shadow-md group'
+                  }`}
                 >
                   <div className="p-3 rounded-lg bg-gold/10 group-hover:bg-gold/20 transition-all duration-300">
                     <stat.icon className="text-2xl text-gold" />
                   </div>
                   <div>
-                    <div className="text-sm text-theme-muted">{stat.label}</div>
+                    <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>
+                      {stat.label}
+                    </div>
                     <div className="font-semibold text-theme-primary">{stat.value}</div>
                   </div>
                 </motion.div>

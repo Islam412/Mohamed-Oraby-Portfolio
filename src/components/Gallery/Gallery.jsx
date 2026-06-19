@@ -1,8 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { FaTimes, FaImages, FaCamera, FaSearch, FaExpand, FaHeart } from 'react-icons/fa';
+import { useApp } from '../../context/AppContext';
 
 const Gallery = () => {
+  const { theme } = useApp();
+  const isDark = theme === 'dark';
   const [selectedImage, setSelectedImage] = useState(null);
   const [hoveredImage, setHoveredImage] = useState(null);
   
@@ -23,17 +26,20 @@ const Gallery = () => {
     : images.filter(img => img.category === activeCategory);
 
   return (
-    <section id="gallery" className="py-24 relative overflow-hidden pattern-bg">
-      {/* خلفية */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
-      <div className="absolute top-40 left-20 w-80 h-80 bg-gold/3 rounded-full blur-3xl" />
-      <div className="absolute bottom-40 right-20 w-80 h-80 bg-gold/3 rounded-full blur-3xl" />
+    <section id="gallery" className="py-24 relative overflow-hidden">
+      {isDark ? (
+        <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
+      ) : (
+        <div className="absolute inset-0 bg-white" />
+      )}
+      <div className={`absolute top-40 left-20 w-80 h-80 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
+      <div className={`absolute bottom-40 right-20 w-80 h-80 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
       
-      {/* زخارف */}
-      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-gold/5 text-4xl font-amiri">﴿ وَقُلِ اعْمَلُوا فَسَيَرَى اللَّهُ عَمَلَكُمْ ﴾</div>
+      <div className={`absolute top-10 left-1/2 transform -translate-x-1/2 text-4xl font-amiri ${isDark ? 'text-gold/5' : 'text-gold/10'}`}>
+        ﴿ وَقُلِ اعْمَلُوا فَسَيَرَى اللَّهُ عَمَلَكُمْ ﴾
+      </div>
 
       <div className="container mx-auto px-4 md:px-8 relative z-10">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -48,13 +54,12 @@ const Gallery = () => {
           <h2 className="heading-primary text-4xl md:text-5xl font-bold gradient-premium mb-3 calligraphy">
             معرض الصور
           </h2>
-          <p className="text-textSecondary text-lg max-w-2xl mx-auto">
+          <p className="text-theme-secondary text-lg max-w-2xl mx-auto">
             لحظات مميزة من رحلتنا التعليمية
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto rounded-full mt-4" />
         </motion.div>
 
-        {/* Category Filter */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -68,7 +73,9 @@ const Gallery = () => {
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === category
                   ? 'bg-gold text-black shadow-lg shadow-gold/20'
-                  : 'glass-premium text-textSecondary hover:text-white hover:border-gold/30'
+                  : isDark 
+                    ? 'glass-premium text-textSecondary hover:text-white hover:border-gold/30'
+                    : 'bg-white/80 text-theme-secondary hover:text-theme-primary hover:border-gold/30 border border-gold/10'
               }`}
             >
               {category}
@@ -76,7 +83,6 @@ const Gallery = () => {
           ))}
         </motion.div>
 
-        {/* Grid */}
         <motion.div 
           layout
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
@@ -94,11 +100,11 @@ const Gallery = () => {
               onMouseEnter={() => setHoveredImage(image.id)}
               onMouseLeave={() => setHoveredImage(null)}
             >
-              {/* Glow Effect */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              <div className={`absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${isDark ? '' : 'opacity-30 group-hover:opacity-80'}`} />
               
-              {/* Image Container */}
-              <div className="relative aspect-square bg-gradient-to-br from-gold/5 to-primary overflow-hidden rounded-2xl">
+              <div className={`relative aspect-square bg-gradient-to-br from-gold/5 to-primary overflow-hidden rounded-2xl ${
+                isDark ? '' : 'shadow-md hover:shadow-xl'
+              }`}>
                 <img
                   src={image.src}
                   alt={image.title}
@@ -108,10 +114,8 @@ const Gallery = () => {
                   }}
                 />
                 
-                {/* Overlay Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 
-                {/* Content Overlay */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
                   <div className="text-center transform group-hover:scale-105 transition-all duration-500">
                     <div className="w-14 h-14 rounded-full bg-gold/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-3 group-hover:bg-gold/30 transition-all duration-300">
@@ -125,17 +129,14 @@ const Gallery = () => {
                   </div>
                 </div>
 
-                {/* Category Badge */}
                 <div className="absolute top-3 right-3 px-3 py-1 rounded-full glass-premium text-xs text-gold border border-gold/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500">
                   {image.category}
                 </div>
 
-                {/* Heart Icon */}
                 <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
                   <FaHeart className="text-gold/50 text-sm hover:text-gold transition-colors duration-300" />
                 </div>
 
-                {/* Image Counter */}
                 <div className="absolute top-3 left-3 px-2 py-1 rounded-md glass-premium text-xs text-textMuted opacity-0 group-hover:opacity-100 transition-all duration-500">
                   {index + 1}/{filteredImages.length}
                 </div>
@@ -144,7 +145,6 @@ const Gallery = () => {
           ))}
         </motion.div>
 
-        {/* Empty State */}
         {filteredImages.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -152,28 +152,30 @@ const Gallery = () => {
             className="text-center py-20"
           >
             <div className="text-6xl mb-4">📸</div>
-            <p className="text-textSecondary">لا توجد صور في هذا التصنيف</p>
+            <p className="text-theme-muted">لا توجد صور في هذا التصنيف</p>
           </motion.div>
         )}
 
-        {/* Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-wrap items-center justify-center gap-8 mt-16"
         >
-          <div className="flex items-center gap-3 glass-premium px-6 py-3 rounded-full border border-gold/10">
+          <div className={`flex items-center gap-3 px-6 py-3 rounded-full border border-gold/10 ${
+            isDark ? 'glass-premium' : 'bg-white shadow-md'
+          }`}>
             <FaImages className="text-gold" />
-            <span className="text-textSecondary">عدد الصور: <span className="text-white font-bold">{images.length}</span></span>
+            <span className="text-theme-secondary">عدد الصور: <span className="font-bold text-theme-primary">{images.length}</span></span>
           </div>
-          <div className="flex items-center gap-3 glass-premium px-6 py-3 rounded-full border border-gold/10">
+          <div className={`flex items-center gap-3 px-6 py-3 rounded-full border border-gold/10 ${
+            isDark ? 'glass-premium' : 'bg-white shadow-md'
+          }`}>
             <FaCamera className="text-gold" />
-            <span className="text-textSecondary">عدد التصنيفات: <span className="text-white font-bold">{categories.length - 1}</span></span>
+            <span className="text-theme-secondary">عدد التصنيفات: <span className="font-bold text-theme-primary">{categories.length - 1}</span></span>
           </div>
         </motion.div>
 
-        {/* Lightbox */}
         <AnimatePresence>
           {selectedImage && (
             <motion.div
@@ -190,7 +192,6 @@ const Gallery = () => {
                 className="relative max-w-5xl w-full"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Close Button */}
                 <button
                   className="absolute -top-14 right-0 text-white/70 hover:text-white text-2xl transition-all duration-300 hover:rotate-90"
                   onClick={() => setSelectedImage(null)}
@@ -198,7 +199,6 @@ const Gallery = () => {
                   <FaTimes />
                 </button>
 
-                {/* Image */}
                 <div className="relative rounded-2xl overflow-hidden bg-secondary">
                   <img
                     src={selectedImage.src}
@@ -209,7 +209,6 @@ const Gallery = () => {
                     }}
                   />
                   
-                  {/* Image Info */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
                     <h3 className="text-xl font-bold text-white">{selectedImage.title}</h3>
                     <div className="flex items-center gap-4 mt-1">
@@ -219,7 +218,6 @@ const Gallery = () => {
                   </div>
                 </div>
 
-                {/* Navigation Arrows */}
                 <div className="absolute left-4 top-1/2 -translate-y-1/2">
                   <button
                     onClick={() => {
@@ -249,7 +247,6 @@ const Gallery = () => {
                   </button>
                 </div>
 
-                {/* Counter */}
                 <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-textMuted text-sm">
                   {images.findIndex(img => img.id === selectedImage.id) + 1} / {images.length}
                 </div>

@@ -1,7 +1,11 @@
 import { motion } from 'framer-motion';
-import { FaBook, FaGraduationCap, FaChalkboardTeacher, FaStar, FaBookOpen, FaPenFancy } from 'react-icons/fa';
+import { FaBook, FaGraduationCap, FaPenFancy, FaStar, FaBookOpen } from 'react-icons/fa';
+import { useApp } from '../../context/AppContext';
 
 const Courses = () => {
+  const { theme } = useApp();
+  const isDark = theme === 'dark';
+  
   const courses = [
     {
       title: 'النحو والصرف',
@@ -34,16 +38,19 @@ const Courses = () => {
 
   return (
     <section id="courses" className="py-24 relative overflow-hidden pattern-bg">
-      {/* خلفية متحركة */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
-      <div className="absolute top-40 right-20 w-80 h-80 bg-gold/3 rounded-full blur-3xl" />
-      <div className="absolute bottom-40 left-20 w-80 h-80 bg-gold/3 rounded-full blur-3xl" />
+      {isDark ? (
+        <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-white" />
+      )}
+      <div className={`absolute top-40 right-20 w-80 h-80 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
+      <div className={`absolute bottom-40 left-20 w-80 h-80 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
       
-      {/* زخارف عربية */}
-      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-gold/5 text-4xl font-amiri">﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾</div>
+      <div className={`absolute top-10 left-1/2 transform -translate-x-1/2 text-4xl font-amiri ${isDark ? 'text-gold/5' : 'text-gold/10'}`}>
+        ﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾
+      </div>
 
       <div className="container mx-auto px-4 md:px-8 relative z-10">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -58,13 +65,12 @@ const Courses = () => {
           <h2 className="heading-primary text-4xl md:text-5xl font-bold gradient-premium mb-3 calligraphy">
             الدورات التعليمية
           </h2>
-          <p className="text-textSecondary text-lg max-w-2xl mx-auto">
+          <p className="text-theme-secondary text-lg max-w-2xl mx-auto">
             نقدم لك أفضل الدورات في اللغة العربية لتتقنها بكل سهولة ويسر
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto rounded-full mt-4" />
         </motion.div>
 
-        {/* بطاقات الدورات */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {courses.map((course, index) => (
             <motion.div
@@ -75,44 +81,36 @@ const Courses = () => {
               whileHover={{ y: -8 }}
               className="group relative"
             >
-              {/* Card Glow Effect */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              <div className={`absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${isDark ? '' : 'opacity-30 group-hover:opacity-80'}`} />
               
-              {/* Card Content */}
-              <div className={`relative p-8 rounded-2xl glass-premium border ${course.borderColor} ${course.hoverBorder} transition-all duration-500 overflow-hidden`}>
-                {/* Animated Background Gradient */}
+              <div className={`relative p-8 rounded-2xl border ${course.borderColor} ${course.hoverBorder} transition-all duration-500 overflow-hidden ${
+                isDark 
+                  ? 'glass-premium' 
+                  : 'bg-white/90 hover:bg-white border-gold/20 shadow-lg shadow-gold/5'
+              }`}>
                 <div className={`absolute inset-0 bg-gradient-to-br ${course.iconBg} opacity-0 group-hover:opacity-100 transition-all duration-700`} />
                 
-                {/* Decorative Corner */}
                 <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-gold/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 
-                {/* Icon Container */}
                 <div className="relative">
                   <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${course.iconBg} flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-gold/10`}>
                     <course.icon className="text-4xl text-gold group-hover:text-goldLight transition-all duration-300" />
                   </div>
                   
-                  {/* Decorative Ring */}
                   <div className="absolute -inset-1 rounded-2xl border border-gold/5 group-hover:border-gold/20 transition-all duration-500 animate-spin-slow" style={{ animationDuration: '15s' }} />
                 </div>
 
-                {/* Title */}
                 <h3 className={`text-xl font-bold text-center mb-3 group-hover:text-gold transition-all duration-300 bg-gradient-to-r ${course.gradient} bg-clip-text text-transparent`}>
                   {course.title}
                 </h3>
                 
-                {/* Description */}
-                <p className="text-textSecondary text-center leading-relaxed group-hover:text-textPrimary transition-all duration-300">
+                <p className={`text-center leading-relaxed transition-all duration-300 ${isDark ? 'text-textSecondary group-hover:text-textPrimary' : 'text-theme-secondary group-hover:text-theme-primary'}`}>
                   {course.description}
                 </p>
 
-                {/* Decorative Line */}
                 <div className="w-12 h-0.5 bg-gradient-to-r from-gold/0 via-gold/50 to-gold/0 mx-auto mt-4 group-hover:w-20 transition-all duration-500" />
-
-                {/* Hover Bottom Border */}
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent scale-x-0 group-hover:scale-x-100 transition-all duration-500" />
 
-                {/* Floating Stars */}
                 <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
                   <FaStar className="text-gold/20 text-xs animate-pulse" />
                 </div>
@@ -124,16 +122,17 @@ const Courses = () => {
           ))}
         </div>
 
-        {/* Footer Message */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-16"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full glass-premium border border-gold/10">
+          <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full border border-gold/10 ${
+            isDark ? 'glass-premium' : 'bg-white/90 shadow-lg shadow-gold/5 border-gold/20'
+          }`}>
             <FaStar className="text-gold text-sm animate-pulse" />
-            <span className="text-textSecondary text-sm">
+            <span className={`text-sm ${isDark ? 'text-textSecondary' : 'text-theme-secondary'}`}>
               انضم إلينا وابدأ رحلتك في تعلم اللغة العربية
             </span>
             <FaStar className="text-gold text-sm animate-pulse" style={{ animationDelay: '0.5s' }} />

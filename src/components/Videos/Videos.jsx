@@ -5,8 +5,11 @@ import {
   FaVideo, FaCalendarAlt, FaUser, FaStar,
   FaYoutube, FaFilm, FaPlayCircle, FaExpand
 } from 'react-icons/fa';
+import { useApp } from '../../context/AppContext';
 
 const Videos = () => {
+  const { theme } = useApp();
+  const isDark = theme === 'dark';
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [hoveredVideo, setHoveredVideo] = useState(null);
   const [activeCategory, setActiveCategory] = useState('الكل');
@@ -109,7 +112,7 @@ const Videos = () => {
 
   const getCategoryColor = (category) => {
     switch(category) {
-      case 'نحو': return 'from-red-500/20 to-red-600/10 border-red-500/30';
+      case 'نحو': return 'from-amber-500/20 to-amber-600/10 border-amber-500/30';
       case 'بلاغة': return 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30';
       case 'إملاء': return 'from-purple-500/20 to-purple-600/10 border-purple-500/30';
       default: return 'from-gold/20 to-gold/10 border-gold/30';
@@ -125,14 +128,21 @@ const Videos = () => {
   };
 
   return (
-    <section id="videos" className="py-24 relative overflow-hidden pattern-bg">
-      {/* خلفية */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
-      <div className="absolute top-40 left-20 w-80 h-80 bg-gold/3 rounded-full blur-3xl" />
-      <div className="absolute bottom-40 right-20 w-80 h-80 bg-gold/3 rounded-full blur-3xl" />
+    <section id="videos" className="py-24 relative overflow-hidden">
+      {/* خلفية بيضاء بالكامل في الوضع الفاتح */}
+      {isDark ? (
+        <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
+      ) : (
+        <div className="absolute inset-0 bg-white" />
+      )}
       
-      {/* زخارف */}
-      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-gold/5 text-4xl font-amiri">﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾</div>
+      {/* عناصر زخرفية */}
+      <div className={`absolute top-40 left-20 w-80 h-80 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
+      <div className={`absolute bottom-40 right-20 w-80 h-80 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
+      
+      <div className={`absolute top-10 left-1/2 transform -translate-x-1/2 text-4xl font-amiri ${isDark ? 'text-gold/5' : 'text-gold/8'}`}>
+        ﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾
+      </div>
 
       <div className="container mx-auto px-4 md:px-8 relative z-10">
         {/* Header */}
@@ -150,7 +160,7 @@ const Videos = () => {
           <h2 className="heading-primary text-4xl md:text-5xl font-bold gradient-premium mb-3 calligraphy">
             فيديوهات الشرح
           </h2>
-          <p className="text-textSecondary text-lg max-w-2xl mx-auto">
+          <p className="text-theme-secondary text-lg max-w-2xl mx-auto">
             مجموعة من الفيديوهات التعليمية لتسهيل فهم اللغة العربية
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto rounded-full mt-4" />
@@ -170,7 +180,9 @@ const Videos = () => {
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === category
                   ? 'bg-gold text-black shadow-lg shadow-gold/20'
-                  : 'glass-premium text-textSecondary hover:text-white hover:border-gold/30'
+                  : isDark 
+                    ? 'glass-premium text-textSecondary hover:text-white hover:border-gold/30'
+                    : 'bg-white text-theme-secondary hover:text-theme-primary hover:border-gold/30 border border-gold/20 shadow-sm'
               }`}
             >
               {category === 'الكل' ? '📚 الكل' : `${getCategoryIcon(category)} ${category}`}
@@ -193,10 +205,14 @@ const Videos = () => {
               onClick={() => openVideo(video)}
             >
               {/* Glow Effect */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              <div className={`absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${isDark ? '' : 'opacity-20 group-hover:opacity-60'}`} />
               
               {/* Card */}
-              <div className={`relative rounded-2xl overflow-hidden glass-premium border border-white/5 group-hover:border-gold/30 transition-all duration-500`}>
+              <div className={`relative rounded-2xl overflow-hidden border transition-all duration-500 ${
+                isDark 
+                  ? 'glass-premium border-white/5 group-hover:border-gold/30' 
+                  : 'bg-white border-gold/10 shadow-md hover:shadow-xl group-hover:border-gold/30'
+              }`}>
                 {/* Thumbnail */}
                 <div className="relative aspect-video overflow-hidden bg-secondary">
                   <img
@@ -232,15 +248,15 @@ const Videos = () => {
 
                 {/* Info */}
                 <div className="p-4">
-                  <h3 className="font-bold text-sm md:text-base line-clamp-2 group-hover:text-gold transition-all duration-300">
+                  <h3 className={`font-bold text-sm md:text-base line-clamp-2 group-hover:text-gold transition-all duration-300 ${isDark ? 'text-white' : 'text-theme-primary'}`}>
                     {video.title}
                   </h3>
-                  <p className="text-textMuted text-xs mt-1 line-clamp-2">
+                  <p className={`text-theme-muted text-xs mt-1 line-clamp-2`}>
                     {video.description}
                   </p>
                   
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-                    <div className="flex items-center gap-3 text-xs text-textMuted">
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gold/10">
+                    <div className="flex items-center gap-3 text-xs text-theme-muted">
                       <span className="flex items-center gap-1">
                         <FaEye className="text-gold/50" />
                         {video.views}
@@ -250,7 +266,7 @@ const Videos = () => {
                         {video.likes}
                       </span>
                     </div>
-                    <span className="text-xs text-textMuted">
+                    <span className="text-xs text-theme-muted">
                       {video.date}
                     </span>
                   </div>
@@ -268,7 +284,7 @@ const Videos = () => {
             className="text-center py-20"
           >
             <div className="text-6xl mb-4">🎬</div>
-            <p className="text-textSecondary">لا توجد فيديوهات في هذا التصنيف</p>
+            <p className="text-theme-muted">لا توجد فيديوهات في هذا التصنيف</p>
           </motion.div>
         )}
 
@@ -279,13 +295,17 @@ const Videos = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-wrap items-center justify-center gap-6 mt-12"
         >
-          <div className="flex items-center gap-3 glass-premium px-6 py-3 rounded-full border border-gold/10">
+          <div className={`flex items-center gap-3 px-6 py-3 rounded-full border border-gold/10 ${
+            isDark ? 'glass-premium' : 'bg-white shadow-md'
+          }`}>
             <FaVideo className="text-gold" />
-            <span className="text-textSecondary">عدد الفيديوهات: <span className="text-white font-bold">{videos.length}</span></span>
+            <span className="text-theme-secondary">عدد الفيديوهات: <span className="font-bold text-theme-primary">{videos.length}</span></span>
           </div>
-          <div className="flex items-center gap-3 glass-premium px-6 py-3 rounded-full border border-gold/10">
+          <div className={`flex items-center gap-3 px-6 py-3 rounded-full border border-gold/10 ${
+            isDark ? 'glass-premium' : 'bg-white shadow-md'
+          }`}>
             <FaFilm className="text-gold" />
-            <span className="text-textSecondary">إجمالي المشاهدات: <span className="text-white font-bold">٥.٩٣٠</span></span>
+            <span className="text-theme-secondary">إجمالي المشاهدات: <span className="font-bold text-theme-primary">٥.٩٣٠</span></span>
           </div>
         </motion.div>
 
@@ -306,7 +326,6 @@ const Videos = () => {
                 className="relative max-w-4xl w-full"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Close Button */}
                 <button
                   className="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl transition-all duration-300 hover:rotate-90"
                   onClick={closeVideo}
@@ -314,7 +333,6 @@ const Videos = () => {
                   ✕
                 </button>
 
-                {/* Video Player */}
                 <div className="relative rounded-2xl overflow-hidden bg-secondary aspect-video">
                   <iframe
                     src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=1&rel=0`}
@@ -325,7 +343,6 @@ const Videos = () => {
                   />
                 </div>
 
-                {/* Video Info */}
                 <div className="mt-4 p-4 rounded-2xl glass-premium border border-gold/10">
                   <h3 className="text-xl font-bold text-white">{selectedVideo.title}</h3>
                   <p className="text-textSecondary text-sm mt-1">{selectedVideo.description}</p>

@@ -5,9 +5,12 @@ import {
   FaArrowRight, FaClock, FaTrophy, FaAward, 
   FaGraduationCap, FaMedal, FaCertificate, FaRocket 
 } from 'react-icons/fa';
+import { useApp } from '../../context/AppContext';
 import { examsData, getExamById } from '../../data/examsData';
 
 const Exams = () => {
+  const { theme } = useApp();
+  const isDark = theme === 'dark';
   const [currentExam, setCurrentExam] = useState(null);
   const [answers, setAnswers] = useState({});
   const [showResult, setShowResult] = useState(false);
@@ -72,17 +75,20 @@ const Exams = () => {
   };
 
   return (
-    <section id="exams" className="py-24 relative overflow-hidden pattern-bg">
-      {/* خلفية */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
-      <div className="absolute top-20 right-20 w-80 h-80 bg-gold/3 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-20 w-80 h-80 bg-gold/3 rounded-full blur-3xl" />
+    <section id="exams" className="py-24 relative overflow-hidden">
+      {isDark ? (
+        <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
+      ) : (
+        <div className="absolute inset-0 bg-white" />
+      )}
+      <div className={`absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
+      <div className={`absolute bottom-20 left-20 w-80 h-80 rounded-full blur-3xl ${isDark ? 'bg-gold/3' : 'bg-gold/5'}`} />
       
-      {/* زخارف */}
-      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-gold/5 text-4xl font-amiri">﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾</div>
+      <div className={`absolute top-10 left-1/2 transform -translate-x-1/2 text-4xl font-amiri ${isDark ? 'text-gold/5' : 'text-gold/10'}`}>
+        ﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾
+      </div>
 
       <div className="container mx-auto px-4 md:px-8 relative z-10">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -97,14 +103,13 @@ const Exams = () => {
           <h2 className="heading-primary text-4xl md:text-5xl font-bold gradient-premium mb-3 calligraphy">
             الامتحانات
           </h2>
-          <p className="text-textSecondary text-lg max-w-2xl mx-auto">
+          <p className="text-theme-secondary text-lg max-w-2xl mx-auto">
             اختبر معلوماتك في اللغة العربية وتحدى نفسك
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto rounded-full mt-4" />
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {/* قائمة الامتحانات */}
           {!currentExam && (
             <motion.div
               key="list"
@@ -126,21 +131,25 @@ const Exams = () => {
                     setExamStarted(false);
                   }}
                 >
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <div className={`absolute -inset-0.5 bg-gradient-to-r from-gold/20 via-transparent to-gold/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${isDark ? '' : 'opacity-30 group-hover:opacity-80'}`} />
                   
-                  <div className={`relative p-8 rounded-2xl glass-premium border border-gold/10 group-hover:border-gold/30 transition-all duration-500 overflow-hidden`}>
+                  <div className={`relative p-8 rounded-2xl border border-gold/10 group-hover:border-gold/30 transition-all duration-500 overflow-hidden ${
+                    isDark ? 'glass-premium' : 'bg-white shadow-md hover:shadow-xl'
+                  }`}>
                     <div className={`absolute inset-0 bg-gradient-to-br ${exam.color} opacity-0 group-hover:opacity-100 transition-all duration-700`} />
                     
                     <div className="relative">
                       <div className="text-5xl mb-4 block group-hover:scale-110 transition-all duration-500">
                         {exam.icon}
                       </div>
-                      <h3 className="text-xl font-bold mb-2 group-hover:text-gold transition-all duration-300">
+                      <h3 className={`text-xl font-bold mb-2 group-hover:text-gold transition-all duration-300 ${isDark ? 'text-white' : 'text-theme-primary'}`}>
                         {exam.title}
                       </h3>
-                      <p className="text-textSecondary text-sm mb-3">{exam.description}</p>
+                      <p className={`text-sm mb-3 ${isDark ? 'text-textSecondary' : 'text-theme-secondary'}`}>
+                        {exam.description}
+                      </p>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-textMuted">
+                        <span className={`text-xs ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>
                           {exam.questions.length} أسئلة
                         </span>
                         <span className="text-xs px-3 py-1 rounded-full bg-gold/10 text-gold group-hover:bg-gold/20 transition-all duration-300">
@@ -154,7 +163,6 @@ const Exams = () => {
             </motion.div>
           )}
 
-          {/* الامتحان الحالي */}
           {currentExam && exam && !showResult && (
             <motion.div
               key="exam"
@@ -163,14 +171,17 @@ const Exams = () => {
               exit={{ opacity: 0, y: -20 }}
               className="max-w-3xl mx-auto"
             >
-              {/* Progress Bar */}
-              <div className="mb-8 glass-premium rounded-2xl p-4 border border-gold/10">
+              <div className={`mb-8 rounded-2xl p-4 border border-gold/10 ${
+                isDark ? 'glass-premium' : 'bg-white shadow-md'
+              }`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{exam.icon}</span>
-                    <span className="font-semibold text-sm">{exam.title}</span>
+                    <span className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-theme-primary'}`}>
+                      {exam.title}
+                    </span>
                   </div>
-                  <span className="text-sm text-textMuted">
+                  <span className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>
                     {answeredCount}/{totalQuestions} تم الإجابة
                   </span>
                 </div>
@@ -183,14 +194,15 @@ const Exams = () => {
                 </div>
               </div>
 
-              {/* السؤال الحالي */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentQuestion}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="mb-6 p-8 rounded-2xl glass-premium border border-gold/10"
+                  className={`mb-6 p-8 rounded-2xl border border-gold/10 ${
+                    isDark ? 'glass-premium' : 'bg-white shadow-md'
+                  }`}
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-sm text-gold font-semibold">
@@ -199,7 +211,7 @@ const Exams = () => {
                     <div className="flex-1 h-px bg-gradient-to-r from-gold/20 to-transparent" />
                   </div>
                   
-                  <h4 className="text-xl font-bold mb-6">
+                  <h4 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-theme-primary'}`}>
                     {exam.questions[currentQuestion].question}
                   </h4>
                   
@@ -211,15 +223,19 @@ const Exams = () => {
                         className={`p-4 rounded-xl cursor-pointer transition-all duration-300 border ${
                           answers[exam.questions[currentQuestion].id] === optIndex
                             ? 'border-gold bg-gold/10 shadow-lg shadow-gold/5'
-                            : 'border-white/5 hover:border-gold/30 hover:bg-white/5'
-                        }`}
+                            : isDark 
+                              ? 'border-white/5 hover:border-gold/30 hover:bg-white/5'
+                              : 'border-gold/10 hover:border-gold/30 hover:bg-gold/5'
+                        } ${isDark ? '' : 'bg-white/50'}`}
                         onClick={() => handleAnswer(exam.questions[currentQuestion].id, optIndex)}
                       >
                         <div className="flex items-center gap-3">
                           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
                             answers[exam.questions[currentQuestion].id] === optIndex
                               ? 'border-gold bg-gold'
-                              : 'border-textMuted hover:border-gold'
+                              : isDark 
+                                ? 'border-textMuted hover:border-gold'
+                                : 'border-gold/30 hover:border-gold'
                           }`}>
                             {answers[exam.questions[currentQuestion].id] === optIndex && (
                               <FaCheck className="text-xs text-black" />
@@ -235,15 +251,16 @@ const Exams = () => {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Navigation Buttons */}
               <div className="flex items-center justify-between gap-4">
                 <button
                   onClick={handlePrev}
                   disabled={currentQuestion === 0}
                   className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 ${
                     currentQuestion === 0
-                      ? 'opacity-30 cursor-not-allowed'
-                      : 'glass-premium hover:border-gold/30 hover:text-gold'
+                      ? `opacity-30 cursor-not-allowed ${isDark ? '' : 'text-theme-muted'}`
+                      : isDark 
+                        ? 'glass-premium hover:border-gold/30 hover:text-gold'
+                        : 'bg-white shadow-md hover:shadow-lg hover:border-gold/30 hover:text-gold border border-gold/10'
                   }`}
                 >
                   <FaArrowRight />
@@ -256,7 +273,9 @@ const Exams = () => {
                     disabled={answeredCount < totalQuestions}
                     className={`px-8 py-3 rounded-xl font-bold transition-all duration-300 ${
                       answeredCount < totalQuestions
-                        ? 'bg-white/5 text-textMuted cursor-not-allowed'
+                        ? isDark 
+                          ? 'bg-white/5 text-textMuted cursor-not-allowed'
+                          : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-gradient-to-r from-gold to-goldLight text-black hover:shadow-xl hover:shadow-gold/20'
                     }`}
                   >
@@ -265,7 +284,11 @@ const Exams = () => {
                 ) : (
                   <button
                     onClick={handleNext}
-                    className="px-6 py-3 rounded-xl glass-premium hover:border-gold/30 hover:text-gold transition-all duration-300 flex items-center gap-2"
+                    className={`px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 ${
+                      isDark 
+                        ? 'glass-premium hover:border-gold/30 hover:text-gold'
+                        : 'bg-white shadow-md hover:shadow-lg hover:border-gold/30 hover:text-gold border border-gold/10'
+                    }`}
                   >
                     <span>التالي</span>
                     <FaArrowLeft />
@@ -273,7 +296,6 @@ const Exams = () => {
                 )}
               </div>
 
-              {/* Progress Indicators */}
               <div className="flex items-center justify-center gap-2 mt-6">
                 {exam.questions.map((_, index) => (
                   <div
@@ -283,7 +305,7 @@ const Exams = () => {
                         ? 'w-6 bg-gold'
                         : answers[exam.questions[index].id] !== undefined
                         ? 'bg-gold/50'
-                        : 'bg-white/10'
+                        : isDark ? 'bg-white/10' : 'bg-gray-200'
                     }`}
                   />
                 ))}
@@ -291,7 +313,6 @@ const Exams = () => {
             </motion.div>
           )}
 
-          {/* Result */}
           {showResult && exam && (
             <motion.div
               key="result"
@@ -299,7 +320,9 @@ const Exams = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="max-w-2xl mx-auto"
             >
-              <div className="p-10 rounded-2xl glass-premium border border-gold/20 text-center">
+              <div className={`p-10 rounded-2xl border border-gold/20 text-center ${
+                isDark ? 'glass-premium' : 'bg-white shadow-lg'
+              }`}>
                 <div className="text-7xl mb-4 animate-bounce">
                   {getScoreEmoji()}
                 </div>
@@ -313,14 +336,18 @@ const Exams = () => {
                     <div className="text-5xl font-bold gradient-premium">
                       {score}
                     </div>
-                    <div className="text-sm text-textMuted">من {totalQuestions}</div>
+                    <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>
+                      من {totalQuestions}
+                    </div>
                   </div>
                   <div className="h-12 w-px bg-gold/20" />
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gold">
                       {Math.round((score / totalQuestions) * 100)}%
                     </div>
-                    <div className="text-sm text-textMuted">النسبة</div>
+                    <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>
+                      النسبة
+                    </div>
                   </div>
                 </div>
 
@@ -330,7 +357,7 @@ const Exams = () => {
                   </div>
                 </div>
 
-                <p className="text-textSecondary text-lg mb-8">
+                <p className={`text-lg mb-8 ${isDark ? 'text-textSecondary' : 'text-theme-secondary'}`}>
                   {getScoreMessage()}
                 </p>
 
@@ -342,7 +369,11 @@ const Exams = () => {
                       setAnswers({});
                       setCurrentQuestion(0);
                     }}
-                    className="px-8 py-3 rounded-xl glass-premium hover:border-gold/30 hover:text-gold transition-all duration-300"
+                    className={`px-8 py-3 rounded-xl transition-all duration-300 ${
+                      isDark 
+                        ? 'glass-premium hover:border-gold/30 hover:text-gold'
+                        : 'bg-white shadow-md hover:shadow-lg hover:border-gold/30 hover:text-gold border border-gold/10'
+                    }`}
                   >
                     📚 العودة للامتحانات
                   </button>
