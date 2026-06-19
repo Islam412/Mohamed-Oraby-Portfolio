@@ -37,10 +37,9 @@ const Navbar = () => {
           className="flex items-center gap-2"
         >
           <span className="text-2xl font-bold gradient-text">محمد عرلبي</span>
-          <span className="text-xs text-gray-400">| مدرس لغة عربية</span>
+          <span className="text-xs text-gray-400 hidden sm:inline">| مدرس لغة عربية</span>
         </motion.div>
 
-        {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-6">
           {navItems.map((item) => (
             <a
@@ -66,7 +65,6 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="lg:hidden text-white text-2xl"
@@ -75,7 +73,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <motion.div
         initial={{ opacity: 0, height: 0 }}
         animate={{ opacity: isOpen ? 1 : 0, height: isOpen ? 'auto' : 0 }}
