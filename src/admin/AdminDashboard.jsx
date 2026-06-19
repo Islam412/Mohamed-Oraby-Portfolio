@@ -293,6 +293,14 @@ const ContentManager = () => {
 // ============================================
 // COMPONENT: VideosManager
 // ============================================
+// دالة لاستخراج معرف الفيديو (Video ID) من رابط يوتيوب بأي صيغة، أو إرجاعه كما هو لو كان ID فقط
+const extractYoutubeId = (input) => {
+  if (!input) return '';
+  const trimmed = input.trim();
+  const match = trimmed.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : trimmed;
+};
+
 const VideosManager = () => {
   const { siteData, addVideo, deleteVideo } = useApp();
   const [showAddForm, setShowAddForm] = useState(false);
@@ -360,12 +368,12 @@ const VideosManager = () => {
               />
             </div>
             <div>
-              <label className="block text-sm mb-1 text-theme-muted">رابط YouTube</label>
+              <label className="block text-sm mb-1 text-theme-muted">رابط أو معرف YouTube</label>
               <input
                 type="text"
                 value={newVideo.youtubeId}
-                onChange={(e) => setNewVideo({ ...newVideo, youtubeId: e.target.value })}
-                placeholder="dQw4w9WgXcQ"
+                onChange={(e) => setNewVideo({ ...newVideo, youtubeId: extractYoutubeId(e.target.value) })}
+                placeholder="ضع رابط الفيديو كامل أو الـ ID فقط (مثال: dQw4w9WgXcQ)"
                 className="w-full px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none"
               />
             </div>

@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
-import { FaWhatsapp, FaPhone, FaFacebook, FaInstagram, FaYoutube, FaStar, FaBookOpen, FaUsers } from 'react-icons/fa';
+import { 
+  FaWhatsapp, FaPhone, FaFacebook, FaInstagram, FaYoutube, 
+  FaStar, FaBookOpen, FaUsers 
+} from 'react-icons/fa';
 import { useApp } from '../../context/AppContext';
 
 const Hero = () => {
   const { theme, siteData } = useApp();
   const isDark = theme === 'dark';
   
-  // استخدام البيانات من السياق
   const hero = siteData.hero || {};
   const settings = siteData.settings || {};
   const socialLinks = settings.socialLinks || {};
@@ -109,15 +111,18 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="flex gap-8 flex-wrap"
             >
-              {heroStats.map((stat, index) => (
-                <div key={index} className={`stat-card text-center ${isDark ? '' : 'bg-white/90 border-gold/20 shadow-sm'}`}>
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    {stat.icon && <stat.icon className="text-gold/50" />}
-                    <span className="text-3xl font-bold gradient-premium">{stat.value}</span>
+              {heroStats.map((stat, index) => {
+                const IconComponent = stat.icon;
+                return (
+                  <div key={index} className={`stat-card text-center ${isDark ? '' : 'bg-white/90 border-gold/20 shadow-sm'}`}>
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      {IconComponent && <IconComponent className="text-gold/50" />}
+                      <span className="text-3xl font-bold gradient-premium">{stat.value}</span>
+                    </div>
+                    <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>{stat.label}</div>
                   </div>
-                  <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>{stat.label}</div>
-                </div>
-              ))}
+                );
+              })}
             </motion.div>
           </div>
 

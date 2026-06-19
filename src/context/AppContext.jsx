@@ -1,18 +1,23 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { 
+  FaUsers, FaBookOpen, FaStar, FaGraduationCap, 
+  FaChalkboardTeacher, FaCertificate, FaAward, FaBook,
+  FaPenFancy, FaBookOpen as FaBookOpenIcon
+} from 'react-icons/fa';
 
 const AppContext = createContext();
 
-// البيانات الافتراضية
+// البيانات الافتراضية مع الأيقونات كـ Components حقيقية
 const defaultData = {
   about: {
     name: 'محمد أحمد عرابى',
     title: 'مدرس لغة عربية للمرحلة الإعدادية',
     description: 'معلم لغة عربية متخصص في تدريس المرحلة الإعدادية. أؤمن بأن اللغة العربية هي هويتنا ووسيلة التواصل الحضاري، وأسعى دائماً لتقديم محتوى تعليمي متميز يجمع بين الأصالة والمعاصرة.',
     stats: [
-      { icon: 'FaGraduationCap', label: 'المؤهل', value: 'ليسانس آداب - قسم اللغة العربية' },
-      { icon: 'FaChalkboardTeacher', label: 'الخبرة', value: '٥ سنوات في تدريس المرحلة الإعدادية' },
-      { icon: 'FaCertificate', label: 'الشهادات', value: 'دبلوم تربوي - متخصص في المناهج' },
-      { icon: 'FaAward', label: 'الإنجازات', value: 'حاصل على جائزة أفضل معلم لعام ٢٠٢٤' },
+      { icon: FaGraduationCap, label: 'المؤهل', value: 'ليسانس آداب - قسم اللغة العربية' },
+      { icon: FaChalkboardTeacher, label: 'الخبرة', value: '٥ سنوات في تدريس المرحلة الإعدادية' },
+      { icon: FaCertificate, label: 'الشهادات', value: 'دبلوم تربوي - متخصص في المناهج' },
+      { icon: FaAward, label: 'الإنجازات', value: 'حاصل على جائزة أفضل معلم لعام ٢٠٢٤' },
     ]
   },
   hero: {
@@ -20,9 +25,9 @@ const defaultData = {
     subtitle: 'مدرس لغة عربية للمرحلة الإعدادية',
     description: 'أهلاً بكم في موقعي التعليمي. هنا ستجدون كل ما تحتاجونه لإتقان اللغة العربية من شروحات، ملازم، وفيديوهات تعليمية متميزة.',
     stats: [
-      { icon: 'FaUsers', value: '+٥٠٠', label: 'طالب' },
-      { icon: 'FaBookOpen', value: '+١٠٠', label: 'فيديو شرح' },
-      { icon: 'FaStar', value: '+٥', label: 'سنوات خبرة' },
+      { icon: FaUsers, value: '+٥٠٠', label: 'طالب' },
+      { icon: FaBookOpen, value: '+١٠٠', label: 'فيديو شرح' },
+      { icon: FaStar, value: '+٥', label: 'سنوات خبرة' },
     ]
   },
   courses: [
@@ -300,20 +305,34 @@ const defaultData = {
 };
 
 export const AppProvider = ({ children }) => {
-  // تحميل البيانات من localStorage أو استخدام البيانات الافتراضية
+  // دالة لاستخراج معرف فيديو يوتيوب الصحيح من أي رابط أو ID مخزن (حتى لو كان مخزن غلط من قبل)
+  const extractYoutubeId = (input) => {
+    if (!input) return '';
+    const trimmed = String(input).trim();
+    const match = trimmed.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : trimmed;
+  };
+
+  // تحميل البيانات من localStorage
   const loadData = () => {
     try {
       const saved = localStorage.getItem('siteData');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // دمج البيانات المحفوظة مع البيانات الافتراضية للتأكد من وجود جميع الحقول
+        // دمج البيانات مع الافتراضية
+        const mergedVideos = (parsed.videos || defaultData.videos).map(video => ({
+          ...video,
+          youtubeId: extractYoutubeId(video.youtubeId),
+        }));
         return {
           ...defaultData,
           ...parsed,
-          about: { ...defaultData.about, ...parsed.about },
-          hero: { ...defaultData.hero, ...parsed.hero },
+          // ملاحظة: stats بتاعة about/hero فيها أيقونات (React components) مش قابلة للتخزين في JSON
+          // فبيتم حذفها تلقائيًا من localStorage بعد أول حفظ، فلازم نرجّعها دايمًا من defaultData
+          about: { ...defaultData.about, ...parsed.about, stats: defaultData.about.stats },
+          hero: { ...defaultData.hero, ...parsed.hero, stats: defaultData.hero.stats },
           courses: parsed.courses || defaultData.courses,
-          videos: parsed.videos || defaultData.videos,
+          videos: mergedVideos,
           materials: parsed.materials || defaultData.materials,
           gallery: parsed.gallery || defaultData.gallery,
           exams: parsed.exams || defaultData.exams,
@@ -321,7 +340,7 @@ export const AppProvider = ({ children }) => {
         };
       }
     } catch (error) {
-      console.error('Error loading data from localStorage:', error);
+      console.error('Error loading data:', error);
     }
     return defaultData;
   };
@@ -340,7 +359,6 @@ export const AppProvider = ({ children }) => {
     return 'light';
   });
 
-  // حفظ البيانات في localStorage عند التغيير
   useEffect(() => {
     localStorage.setItem('siteData', JSON.stringify(siteData));
   }, [siteData]);
@@ -360,7 +378,7 @@ export const AppProvider = ({ children }) => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
-  // دوال لإدارة المحتوى - مع تحديث فوري
+  // دوال إدارة المحتوى
   const updateAbout = (data) => {
     setSiteData(prev => {
       const newData = { ...prev, about: { ...prev.about, ...data } };
@@ -414,7 +432,7 @@ export const AppProvider = ({ children }) => {
     setSiteData(prev => {
       const newData = {
         ...prev,
-        videos: [...prev.videos, { ...video, id: Date.now() }]
+        videos: [...prev.videos, { ...video, youtubeId: extractYoutubeId(video.youtubeId), id: Date.now() }]
       };
       localStorage.setItem('siteData', JSON.stringify(newData));
       return newData;
@@ -560,12 +578,10 @@ export const AppProvider = ({ children }) => {
     if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات؟')) {
       setSiteData(defaultData);
       localStorage.setItem('siteData', JSON.stringify(defaultData));
-      // إعادة تحميل الصفحة لتحديث الموقع
       window.location.reload();
     }
   };
 
-  // دالة لإعادة تحميل البيانات من localStorage
   const refreshData = () => {
     setSiteData(loadData());
   };

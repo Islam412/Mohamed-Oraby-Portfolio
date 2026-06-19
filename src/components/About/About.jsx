@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion';
-import { FaGraduationCap, FaChalkboardTeacher, FaCertificate, FaAward, FaBook, FaQuran } from 'react-icons/fa';
+import { 
+  FaGraduationCap, FaChalkboardTeacher, FaCertificate, 
+  FaAward, FaBook, FaQuran 
+} from 'react-icons/fa';
 import { useInView } from 'react-intersection-observer';
 import { useApp } from '../../context/AppContext';
 
@@ -11,7 +14,6 @@ const About = () => {
     threshold: 0.1,
   });
 
-  // استخدام البيانات من السياق
   const about = siteData.about || {};
   
   const stats = about.stats || [
@@ -108,29 +110,32 @@ const About = () => {
             </p>
 
             <div className="space-y-4">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 ${
-                    isDark 
-                      ? 'glass-premium group' 
-                      : 'bg-white/90 border-gold/20 shadow-sm hover:shadow-md group'
-                  }`}
-                >
-                  <div className="p-3 rounded-lg bg-gold/10 group-hover:bg-gold/20 transition-all duration-300">
-                    <stat.icon className="text-2xl text-gold" />
-                  </div>
-                  <div>
-                    <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>
-                      {stat.label}
+              {stats.map((stat, index) => {
+                const IconComponent = stat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+                    className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 ${
+                      isDark 
+                        ? 'glass-premium group' 
+                        : 'bg-white/90 border-gold/20 shadow-sm hover:shadow-md group'
+                    }`}
+                  >
+                    <div className="p-3 rounded-lg bg-gold/10 group-hover:bg-gold/20 transition-all duration-300">
+                      {IconComponent && <IconComponent className="text-2xl text-gold" />}
                     </div>
-                    <div className="font-semibold text-theme-primary">{stat.value}</div>
-                  </div>
-                </motion.div>
-              ))}
+                    <div>
+                      <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>
+                        {stat.label}
+                      </div>
+                      <div className="font-semibold text-theme-primary">{stat.value}</div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </div>
