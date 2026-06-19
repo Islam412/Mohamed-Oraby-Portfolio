@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
 import { FaGraduationCap, FaChalkboardTeacher, FaCertificate, FaAward, FaBook, FaQuran } from 'react-icons/fa';
 import { useInView } from 'react-intersection-observer';
+import { useApp } from '../../context/AppContext';
 
 const About = () => {
+  const { theme } = useApp();
+  const isDark = theme === 'dark';
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -17,12 +20,18 @@ const About = () => {
 
   return (
     <section id="about" className="py-24 relative overflow-hidden pattern-bg">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary via-secondary/50 to-primary" />
+      <div className={`absolute inset-0 bg-gradient-to-b ${
+        isDark 
+          ? 'from-primary via-secondary/50 to-primary' 
+          : 'from-light-primary via-light-secondary/50 to-light-primary'
+      }`} />
+      
       <div className="absolute top-20 left-10 w-96 h-96 bg-gold/3 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-gold/3 rounded-full blur-3xl" />
       
-      {/* زخارف عربية */}
-      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-gold/5 text-6xl font-amiri">بسم الله الرحمن الرحيم</div>
+      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-gold/5 text-6xl font-amiri">
+        بسم الله الرحمن الرحيم
+      </div>
       
       <div className="container mx-auto px-4 md:px-8 relative z-10">
         <motion.div
@@ -44,7 +53,6 @@ const About = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* معرض الصور */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -80,7 +88,6 @@ const About = () => {
             </div>
           </motion.div>
 
-          {/* المحتوى */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -89,11 +96,11 @@ const About = () => {
           >
             <div className="flex items-center gap-3 mb-4">
               <FaQuran className="text-gold text-2xl" />
-              <h3 className="heading-secondary text-3xl md:text-4xl font-bold calligraphy text-white">
-                محمد أحمد عرلبي
+              <h3 className="heading-secondary text-3xl md:text-4xl font-bold calligraphy text-theme-primary">
+                محمد أحمد عرابى
               </h3>
             </div>
-            <p className="text-textSecondary text-base md:text-lg leading-relaxed mb-8">
+            <p className="text-theme-secondary text-base md:text-lg leading-relaxed mb-8">
               معلم لغة عربية متخصص في تدريس المرحلة الإعدادية. أؤمن بأن اللغة العربية هي هويتنا
               ووسيلة التواصل الحضاري، وأسعى دائماً لتقديم محتوى تعليمي متميز يجمع بين الأصالة
               والمعاصرة.
@@ -112,8 +119,8 @@ const About = () => {
                     <stat.icon className="text-2xl text-gold" />
                   </div>
                   <div>
-                    <div className="text-sm text-textMuted">{stat.label}</div>
-                    <div className="font-semibold text-white">{stat.value}</div>
+                    <div className="text-sm text-theme-muted">{stat.label}</div>
+                    <div className="font-semibold text-theme-primary">{stat.value}</div>
                   </div>
                 </motion.div>
               ))}

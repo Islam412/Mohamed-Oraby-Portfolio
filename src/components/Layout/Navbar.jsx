@@ -3,20 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaBars, FaTimes, FaHome, FaUser, FaBook, FaVideo, 
   FaFilePdf, FaImages, FaClipboardList, FaGraduationCap,
-  FaStar, FaMoon, FaSun
+  FaMoon, FaSun
 } from 'react-icons/fa';
+import { useApp } from '../../context/AppContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [isDark, setIsDark] = useState(true);
+  const { theme, toggleTheme } = useApp();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
       
-      // تحديث القسم النشط بناءً على التمرير
       const sections = ['home', 'about', 'courses', 'videos', 'materials', 'gallery', 'exams'];
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -44,44 +44,44 @@ const Navbar = () => {
     { id: 'exams', label: 'الامتحانات', icon: FaClipboardList },
   ];
 
+  const isDark = theme === 'dark';
+
   return (
     <nav 
       className={`fixed top-0 right-0 w-full z-50 transition-all duration-700 ${
         scrolled 
-          ? 'glass-premium py-3 shadow-2xl shadow-black/20 border-b border-gold/10' 
-          : 'bg-transparent py-5'
+          ? 'glass-premium py-2 shadow-2xl border-b border-gold/10' 
+          : 'bg-transparent py-4'
       }`}
     >
-      {/* شريط زخرفي علوي */}
       <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent transition-all duration-700 ${
         scrolled ? 'opacity-100' : 'opacity-0'
       }`} />
 
-      <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
+      <div className="container-responsive flex justify-between items-center">
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex items-center gap-3 group cursor-pointer"
+          className="flex items-center gap-2 md:gap-3 group cursor-pointer"
           onClick={() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setActiveSection('home');
           }}
         >
-          {/* أيقونة الدوراد */}
           <div className="relative">
-            <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-all duration-500 group-hover:scale-110">
-              <FaGraduationCap className="text-gold text-lg" />
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-all duration-500 group-hover:scale-110">
+              <FaGraduationCap className="text-gold text-sm md:text-lg" />
             </div>
             <div className="absolute -inset-1 rounded-full border border-gold/20 group-hover:border-gold/40 transition-all duration-500 animate-pulse" />
           </div>
           
           <div className="flex flex-col">
-            <span className="text-xl md:text-2xl font-bold gradient-premium leading-none">
+            <span className="text-sm md:text-xl lg:text-2xl font-bold gradient-premium leading-none">
               محمد أحمد عرابى
             </span>
-            <span className="text-[10px] text-textMuted hidden sm:block">
+            <span className="text-[8px] md:text-[10px] text-theme-muted hidden sm:block">
               مدرس لغة عربية
             </span>
           </div>
@@ -96,10 +96,10 @@ const Navbar = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group ${
+              className={`relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 group ${
                 activeSection === item.id 
                   ? 'text-gold bg-gold/10' 
-                  : 'text-textSecondary hover:text-white hover:bg-white/5'
+                  : 'text-theme-secondary hover:text-theme-primary hover:bg-white/5'
               }`}
               onClick={() => {
                 setActiveSection(item.id);
@@ -108,12 +108,11 @@ const Navbar = () => {
             >
               <span className="flex items-center gap-2">
                 <item.icon className={`text-sm transition-all duration-300 ${
-                  activeSection === item.id ? 'text-gold' : 'text-textMuted group-hover:text-gold'
+                  activeSection === item.id ? 'text-gold' : 'text-theme-muted group-hover:text-gold'
                 }`} />
                 {item.label}
               </span>
               
-              {/* Active Indicator */}
               {activeSection === item.id && (
                 <motion.div
                   layoutId="activeNav"
@@ -121,32 +120,50 @@ const Navbar = () => {
                   transition={{ duration: 0.3 }}
                 />
               )}
-              
-              {/* Hover Effect */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
             </motion.a>
           ))}
 
-          {/* زر التبديل بين الوضعين */}
+          {/* Theme Toggle Button */}
           <motion.button
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.4 }}
-            onClick={() => setIsDark(!isDark)}
-            className="p-2 rounded-xl text-textMuted hover:text-gold hover:bg-gold/10 transition-all duration-300"
+            onClick={toggleTheme}
+            className="p-2 rounded-xl text-theme-muted hover:text-gold hover:bg-gold/10 transition-all duration-300"
+            aria-label={isDark ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع المظلم'}
           >
-            {isDark ? <FaSun className="text-sm" /> : <FaMoon className="text-sm" />}
+            {isDark ? (
+              <FaSun className="text-sm md:text-base" />
+            ) : (
+              <FaMoon className="text-sm md:text-base" />
+            )}
           </motion.button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="flex items-center gap-3 lg:hidden">
+        {/* Mobile Controls */}
+        <div className="flex items-center gap-2 lg:hidden">
+          {/* Theme Toggle - Mobile */}
+          <motion.button
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            onClick={toggleTheme}
+            className="p-2 rounded-xl glass-premium text-theme-muted hover:text-gold transition-all duration-300"
+            aria-label={isDark ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع المظلم'}
+          >
+            {isDark ? (
+              <FaSun className="text-sm" />
+            ) : (
+              <FaMoon className="text-sm" />
+            )}
+          </motion.button>
+          
           <motion.button
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
             onClick={() => setIsOpen(!isOpen)}
-            className="relative w-10 h-10 rounded-xl glass-premium flex items-center justify-center text-white border border-white/10 hover:border-gold/30 transition-all duration-300"
+            className="relative w-10 h-10 rounded-xl glass-premium flex items-center justify-center text-theme-primary border border-gold/10 hover:border-gold/30 transition-all duration-300"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -173,7 +190,7 @@ const Navbar = () => {
             transition={{ duration: 0.4 }}
             className="lg:hidden overflow-hidden glass-premium border-t border-gold/10"
           >
-            <div className="container mx-auto px-4 py-4">
+            <div className="container-responsive py-4">
               <div className="grid grid-cols-2 gap-2">
                 {navItems.map((item, index) => (
                   <motion.a
@@ -185,7 +202,7 @@ const Navbar = () => {
                     className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${
                       activeSection === item.id 
                         ? 'bg-gold/10 text-gold border border-gold/20' 
-                        : 'text-textSecondary hover:text-white hover:bg-white/5 border border-transparent'
+                        : 'text-theme-secondary hover:text-theme-primary hover:bg-white/5 border border-transparent'
                     }`}
                     onClick={() => {
                       setIsOpen(false);
@@ -193,17 +210,17 @@ const Navbar = () => {
                     }}
                   >
                     <item.icon className={`text-sm ${
-                      activeSection === item.id ? 'text-gold' : 'text-textMuted'
+                      activeSection === item.id ? 'text-gold' : 'text-theme-muted'
                     }`} />
                     <span className="text-sm font-medium">{item.label}</span>
                   </motion.a>
                 ))}
               </div>
               
-              {/* قسم التواصل في الموبايل */}
-              <div className="mt-4 pt-4 border-t border-white/5">
+              {/* Quick Contact - Mobile */}
+              <div className="mt-4 pt-4 border-t border-gold/10">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-textMuted">تواصل سريع:</span>
+                  <span className="text-xs text-theme-muted">تواصل سريع:</span>
                   <div className="flex gap-2">
                     <a 
                       href="https://wa.me/201140739030" 

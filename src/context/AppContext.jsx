@@ -35,7 +35,24 @@ const defaultData = {
       borderColor: 'border-amber-500/30',
       gradient: 'from-amber-400 to-amber-600',
     },
-    // ... باقي الدورات
+    {
+      id: 2,
+      title: 'البلاغة',
+      description: 'أساليب البلاغة والبيان وأسرار التعبير القرآني',
+      icon: 'FaGraduationCap',
+      color: 'from-emerald-500/20 to-emerald-600/10',
+      borderColor: 'border-emerald-500/30',
+      gradient: 'from-emerald-400 to-emerald-600',
+    },
+    {
+      id: 3,
+      title: 'الإملاء والخط',
+      description: 'قواعد الإملاء والكتابة الصحيحة وتحسين الخط العربي',
+      icon: 'FaPenFancy',
+      color: 'from-purple-500/20 to-purple-600/10',
+      borderColor: 'border-purple-500/30',
+      gradient: 'from-purple-400 to-purple-600',
+    },
   ],
   videos: [
     {
@@ -50,7 +67,66 @@ const defaultData = {
       youtubeId: 'dQw4w9WgXcQ',
       teacher: 'محمد عرلبي',
     },
-    // ... باقي الفيديوهات
+    {
+      id: 2,
+      title: 'شرح درس البلاغة - التشبيه',
+      description: 'فهم أنواع التشبيه وأركانه مع تطبيقات من القرآن الكريم',
+      duration: '١٨:٤٥',
+      views: '٩٨٠',
+      likes: '٦٧',
+      category: 'بلاغة',
+      date: '٢٠٢٤-٠١-٢٠',
+      youtubeId: 'dQw4w9WgXcQ',
+      teacher: 'محمد عرلبي',
+    },
+    {
+      id: 3,
+      title: 'شرح درس الإملاء - الهمزة',
+      description: 'قواعد كتابة الهمزة في مختلف مواضع الكلمة',
+      duration: '١٥:٢٠',
+      views: '١.١٠٠',
+      likes: '٧٨',
+      category: 'إملاء',
+      date: '٢٠٢٤-٠١-٢٥',
+      youtubeId: 'dQw4w9WgXcQ',
+      teacher: 'محمد عرلبي',
+    },
+    {
+      id: 4,
+      title: 'شرح درس النحو - المعرب والمبني',
+      description: 'تعرف على الفرق بين الأسماء المعربة والمبنية مع أمثلة',
+      duration: '٢٢:١٠',
+      views: '٧٥٠',
+      likes: '٥٦',
+      category: 'نحو',
+      date: '٢٠٢٤-٠٢-٠١',
+      youtubeId: 'dQw4w9WgXcQ',
+      teacher: 'محمد عرلبي',
+    },
+    {
+      id: 5,
+      title: 'شرح درس البلاغة - الاستعارة',
+      description: 'فهم الاستعارة وأنواعها مع تطبيقات من الأدب العربي',
+      duration: '١٩:٤٠',
+      views: '٨٢٠',
+      likes: '٦٣',
+      category: 'بلاغة',
+      date: '٢٠٢٤-٠٢-٠٥',
+      youtubeId: 'dQw4w9WgXcQ',
+      teacher: 'محمد عرلبي',
+    },
+    {
+      id: 6,
+      title: 'شرح درس الإملاء - التاء المربوطة والتاء المفتوحة',
+      description: 'تعلم الفرق بين التاء المربوطة والمفتوحة مع تدريبات تطبيقية',
+      duration: '١٦:٥٠',
+      views: '٩٣٠',
+      likes: '٧١',
+      category: 'إملاء',
+      date: '٢٠٢٤-٠٢-١٠',
+      youtubeId: 'dQw4w9WgXcQ',
+      teacher: 'محمد عرلبي',
+    },
   ],
   materials: [
     {
@@ -61,7 +137,46 @@ const defaultData = {
       date: '٢٠٢٤-٠١-١٥',
       downloads: 250,
     },
-    // ... باقي الملازم
+    {
+      id: 2,
+      title: 'ملزمة النحو - الجزء الثاني',
+      size: '٦ ميجابايت',
+      category: 'نحو',
+      date: '٢٠٢٤-٠٢-٠١',
+      downloads: 180,
+    },
+    {
+      id: 3,
+      title: 'ملزمة البلاغة - الجزء الأول',
+      size: '٤ ميجابايت',
+      category: 'بلاغة',
+      date: '٢٠٢٤-٠١-٢٠',
+      downloads: 200,
+    },
+    {
+      id: 4,
+      title: 'ملزمة البلاغة - الجزء الثاني',
+      size: '٥ ميجابايت',
+      category: 'بلاغة',
+      date: '٢٠٢٤-٠٢-١٠',
+      downloads: 150,
+    },
+    {
+      id: 5,
+      title: 'ملزمة الإملاء - الجزء الأول',
+      size: '٣ ميجابايت',
+      category: 'إملاء',
+      date: '٢٠٢٤-٠١-٢٥',
+      downloads: 320,
+    },
+    {
+      id: 6,
+      title: 'ملزمة الإملاء - الجزء الثاني',
+      size: '٤ ميجابايت',
+      category: 'إملاء',
+      date: '٢٠٢٤-٠٢-١٥',
+      downloads: 210,
+    },
   ],
   gallery: [
     {
@@ -69,9 +184,43 @@ const defaultData = {
       title: 'مع الطلاب',
       category: 'طلاب',
       date: '٢٠٢٤',
-      image: '/assets/images/with-students/1.jpg',
+      src: '/assets/images/with-students/1.jpg',
     },
-    // ... باقي الصور
+    {
+      id: 2,
+      title: 'في الفصل',
+      category: 'تدريس',
+      date: '٢٠٢٤',
+      src: '/assets/images/with-students/2.jpg',
+    },
+    {
+      id: 3,
+      title: 'ورشة عمل',
+      category: 'ورش',
+      date: '٢٠٢٣',
+      src: '/assets/images/with-students/3.jpg',
+    },
+    {
+      id: 4,
+      title: 'تكريم',
+      category: 'إنجازات',
+      date: '٢٠٢٤',
+      src: '/assets/images/with-students/4.jpg',
+    },
+    {
+      id: 5,
+      title: 'رحلة تعليمية',
+      category: 'رحلات',
+      date: '٢٠٢٣',
+      src: '/assets/images/with-students/5.jpg',
+    },
+    {
+      id: 6,
+      title: 'يوم التميز',
+      category: 'إنجازات',
+      date: '٢٠٢٤',
+      src: '/assets/images/with-students/6.jpg',
+    },
   ],
   exams: [
     {
@@ -87,15 +236,59 @@ const defaultData = {
           options: ['الطالب', 'الكتاب', 'قرأ', 'لا يوجد'],
           correct: 0,
         },
-        // ... باقي الأسئلة
+        {
+          id: 'q2',
+          question: 'أي من التالي يعتبر فعلاً ماضياً؟',
+          options: ['يكتب', 'كتب', 'سيكتب', 'اكتب'],
+          correct: 1,
+        },
+        {
+          id: 'q3',
+          question: 'ما هو إعراب كلمة "الكتاب" في الجملة السابقة؟',
+          options: ['فاعل مرفوع', 'مفعول به منصوب', 'مضاف إليه مجرور', 'خبر مرفوع'],
+          correct: 1,
+        },
+        {
+          id: 'q4',
+          question: 'أي من الأسماء التالية يعتبر اسماً مبنياً؟',
+          options: ['محمد', 'هذا', 'كتاب', 'بيت'],
+          correct: 1,
+        },
+        {
+          id: 'q5',
+          question: 'ما هو جمع كلمة "عالم"؟',
+          options: ['عالمون', 'علماء', 'عالِمين', 'عالمات'],
+          correct: 1,
+        },
       ],
     },
-    // ... باقي الامتحانات
+    {
+      id: 2,
+      title: 'امتحان البلاغة',
+      description: 'اختبر فهمك لعلم البلاغة',
+      icon: '🎭',
+      color: 'from-emerald-500/20 to-emerald-600/10',
+      questions: [
+        {
+          id: 'q1',
+          question: 'ما هو التشبيه في قول الشاعر: "وجهه كالبدر"؟',
+          options: ['تشبيه بليغ', 'تشبيه تمثيلي', 'تشبيه مجمل', 'تشبيه مفصل'],
+          correct: 0,
+        },
+        {
+          id: 'q2',
+          question: 'ما هي الاستعارة في قولنا: "رأيت الأسد يخطب"؟',
+          options: ['استعارة تصريحية', 'استعارة مكنية', 'استعارة تمثيلية', 'ليس استعارة'],
+          correct: 1,
+        },
+      ],
+    },
   ],
   settings: {
     siteName: 'محمد أحمد عرابى',
     siteDescription: 'مدرس لغة عربية للمرحلة الإعدادية',
     primaryColor: '#c9a84c',
+    theme: 'dark', // 'dark' | 'light'
     socialLinks: {
       whatsapp: 'https://wa.me/201140739030',
       phone: 'tel:+201140739030',
@@ -117,10 +310,35 @@ export const AppProvider = ({ children }) => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) return savedTheme;
+    // التحقق من تفضيلات النظام
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  });
 
   useEffect(() => {
     localStorage.setItem('siteData', JSON.stringify(siteData));
   }, [siteData]);
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    // تطبيق الثيم على جذر الصفحة
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   // دوال لإدارة المحتوى
   const updateAbout = (data) => {
@@ -237,7 +455,6 @@ export const AppProvider = ({ children }) => {
   };
 
   const login = (password) => {
-    // يمكنك تغيير كلمة المرور هنا
     if (password === 'admin123') {
       setIsAdmin(true);
       localStorage.setItem('isAdmin', 'true');
@@ -263,6 +480,8 @@ export const AppProvider = ({ children }) => {
       siteData,
       isAdmin,
       loading,
+      theme,
+      toggleTheme,
       updateAbout,
       updateHero,
       addCourse,

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FaSave, FaWhatsapp, FaPhone, FaFacebook, FaInstagram, FaYoutube, FaPalette, FaGlobe } from 'react-icons/fa';
+import { FaSave, FaWhatsapp, FaPhone, FaFacebook, FaInstagram, FaYoutube, FaGlobe, FaMoon, FaSun, FaTrash } from 'react-icons/fa';
 import { useApp } from '../../context/AppContext';
 
 const SettingsManager = () => {
-  const { siteData, updateSettings, resetData } = useApp();
+  const { siteData, updateSettings, resetData, theme, toggleTheme } = useApp();
+  const isDark = theme === 'dark';
   
   const [settings, setSettings] = useState({
     siteName: siteData.settings?.siteName || '',
@@ -25,7 +25,7 @@ const SettingsManager = () => {
   };
 
   const handleReset = () => {
-    if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات إلى الافتراضية؟ هذا الإجراء لا يمكن التراجع عنه!')) {
+    if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات إلى الافتراضية؟')) {
       resetData();
       alert('تم إعادة تعيين جميع البيانات!');
     }
@@ -35,33 +35,53 @@ const SettingsManager = () => {
     <div className="space-y-6">
       <h2 className="text-2xl font-bold gradient-premium calligraphy">إعدادات الموقع</h2>
 
+      {/* الوضع المظلم/الفاتح */}
+      <div className="p-6 rounded-2xl glass-premium border border-gold/10">
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-theme-primary">
+          {isDark ? <FaMoon className="text-gold" /> : <FaSun className="text-gold" />}
+          مظهر الموقع
+        </h3>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-3 px-6 py-3 rounded-xl bg-gold/10 text-gold hover:bg-gold/20 transition-all duration-300"
+          >
+            {isDark ? <FaSun /> : <FaMoon />}
+            <span>{isDark ? 'الوضع الفاتح' : 'الوضع المظلم'}</span>
+          </button>
+          <span className="text-sm text-theme-muted">
+            {isDark ? 'الوضع المظلم مفعل حالياً' : 'الوضع الفاتح مفعل حالياً'}
+          </span>
+        </div>
+      </div>
+
       {/* الإعدادات العامة */}
       <div className="p-6 rounded-2xl glass-premium border border-gold/10">
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-theme-primary">
           <FaGlobe className="text-gold" />
           الإعدادات العامة
         </h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-textMuted mb-1">اسم الموقع</label>
+            <label className="block text-sm mb-1 text-theme-muted">اسم الموقع</label>
             <input
               type="text"
               value={settings.siteName}
               onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
-              className="w-full px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-white outline-none"
+              className="w-full px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none"
             />
           </div>
           <div>
-            <label className="block text-sm text-textMuted mb-1">وصف الموقع</label>
+            <label className="block text-sm mb-1 text-theme-muted">وصف الموقع</label>
             <input
               type="text"
               value={settings.siteDescription}
               onChange={(e) => setSettings({ ...settings, siteDescription: e.target.value })}
-              className="w-full px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-white outline-none"
+              className="w-full px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none"
             />
           </div>
           <div>
-            <label className="block text-sm text-textMuted mb-1">اللون الرئيسي</label>
+            <label className="block text-sm mb-1 text-theme-muted">اللون الرئيسي</label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
@@ -69,7 +89,7 @@ const SettingsManager = () => {
                 onChange={(e) => setSettings({ ...settings, primaryColor: e.target.value })}
                 className="w-12 h-12 rounded-xl cursor-pointer border border-white/5"
               />
-              <span className="text-sm text-textMuted">{settings.primaryColor}</span>
+              <span className="text-sm text-theme-muted">{settings.primaryColor}</span>
             </div>
           </div>
         </div>
@@ -77,13 +97,13 @@ const SettingsManager = () => {
 
       {/* روابط التواصل الاجتماعي */}
       <div className="p-6 rounded-2xl glass-premium border border-gold/10">
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-theme-primary">
           <FaWhatsapp className="text-gold" />
           روابط التواصل الاجتماعي
         </h3>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <FaWhatsapp className="text-2xl text-green-500" />
+            <FaWhatsapp className="text-2xl text-green-500 flex-shrink-0" />
             <input
               type="text"
               value={settings.socialLinks.whatsapp}
@@ -92,11 +112,11 @@ const SettingsManager = () => {
                 socialLinks: { ...settings.socialLinks, whatsapp: e.target.value }
               })}
               placeholder="رابط واتساب"
-              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-white outline-none"
+              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none min-w-0"
             />
           </div>
           <div className="flex items-center gap-3">
-            <FaPhone className="text-2xl text-gold" />
+            <FaPhone className="text-2xl text-gold flex-shrink-0" />
             <input
               type="text"
               value={settings.socialLinks.phone}
@@ -105,11 +125,11 @@ const SettingsManager = () => {
                 socialLinks: { ...settings.socialLinks, phone: e.target.value }
               })}
               placeholder="رقم الهاتف"
-              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-white outline-none"
+              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none min-w-0"
             />
           </div>
           <div className="flex items-center gap-3">
-            <FaFacebook className="text-2xl text-blue-500" />
+            <FaFacebook className="text-2xl text-blue-500 flex-shrink-0" />
             <input
               type="text"
               value={settings.socialLinks.facebook}
@@ -118,11 +138,11 @@ const SettingsManager = () => {
                 socialLinks: { ...settings.socialLinks, facebook: e.target.value }
               })}
               placeholder="رابط فيسبوك"
-              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-white outline-none"
+              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none min-w-0"
             />
           </div>
           <div className="flex items-center gap-3">
-            <FaInstagram className="text-2xl text-pink-500" />
+            <FaInstagram className="text-2xl text-pink-500 flex-shrink-0" />
             <input
               type="text"
               value={settings.socialLinks.instagram}
@@ -131,11 +151,11 @@ const SettingsManager = () => {
                 socialLinks: { ...settings.socialLinks, instagram: e.target.value }
               })}
               placeholder="رابط انستجرام"
-              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-white outline-none"
+              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none min-w-0"
             />
           </div>
           <div className="flex items-center gap-3">
-            <FaYoutube className="text-2xl text-red-500" />
+            <FaYoutube className="text-2xl text-red-500 flex-shrink-0" />
             <input
               type="text"
               value={settings.socialLinks.youtube}
@@ -144,13 +164,12 @@ const SettingsManager = () => {
                 socialLinks: { ...settings.socialLinks, youtube: e.target.value }
               })}
               placeholder="رابط يوتيوب"
-              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-white outline-none"
+              className="flex-1 px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none min-w-0"
             />
           </div>
         </div>
       </div>
 
-      {/* أزرار الإجراءات */}
       <div className="flex flex-wrap gap-4">
         <button
           onClick={handleSave}
@@ -161,8 +180,9 @@ const SettingsManager = () => {
         </button>
         <button
           onClick={handleReset}
-          className="px-6 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-300"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-300"
         >
+          <FaTrash />
           إعادة تعيين جميع البيانات
         </button>
       </div>
