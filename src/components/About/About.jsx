@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { 
   FaGraduationCap, FaChalkboardTeacher, FaCertificate, 
-  FaAward, FaBook, FaQuran 
+  FaAward, FaBook, FaQuran, FaUser 
 } from 'react-icons/fa';
 import { useInView } from 'react-intersection-observer';
 import { useApp } from '../../context/AppContext';
@@ -15,7 +15,9 @@ const About = () => {
   });
 
   const about = siteData.about || {};
+  const profileImage = about.profileImage || 'https://ui-avatars.com/api/?name=محمد+أحمد+عرابى&size=400&background=1a1a1a&color=c9a84c';
   
+  // إحصائيات المدرس من السياق
   const stats = about.stats || [
     { icon: FaGraduationCap, label: 'المؤهل', value: 'ليسانس آداب - قسم اللغة العربية' },
     { icon: FaChalkboardTeacher, label: 'الخبرة', value: '٥ سنوات في تدريس المرحلة الإعدادية' },
@@ -64,17 +66,23 @@ const About = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="grid grid-cols-2 gap-4"
           >
-            <div className="col-span-2 rounded-2xl overflow-hidden gold-border">
+            <div className="col-span-2 rounded-2xl overflow-hidden gold-border relative group">
               <img
-                src="https://ui-avatars.com/api/?name=معلم+لغة+عربية&size=600&background=1a1a1a&color=c9a84c&font-size=0.4"
-                alt="المدرس"
-                className="w-full h-64 object-cover hover:scale-105 transition-all duration-500"
+                src={profileImage}
+                alt={about.name || 'المدرس'}
+                className="w-full h-64 object-cover group-hover:scale-105 transition-all duration-500"
+                onError={(e) => {
+                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(about.name || 'محمد أحمد عرابى')}&size=600&background=1a1a1a&color=c9a84c`;
+                }}
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-4">
+                <span className="text-gold font-semibold text-sm">{about.title || 'مدرس لغة عربية'}</span>
+              </div>
             </div>
             <div className="rounded-2xl overflow-hidden gold-border relative">
               <img
                 src="https://ui-avatars.com/api/?name=تدريس+النحو&size=400&background=1a1a1a&color=c9a84c&font-size=0.3"
-                alt="المدرس"
+                alt="تدريس النحو"
                 className="w-full h-48 object-cover hover:scale-105 transition-all duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-all duration-300 flex items-end p-3">
@@ -84,7 +92,7 @@ const About = () => {
             <div className="rounded-2xl overflow-hidden gold-border relative">
               <img
                 src="https://ui-avatars.com/api/?name=اللغة+العربية&size=400&background=1a1a1a&color=c9a84c&font-size=0.3"
-                alt="المدرس"
+                alt="اللغة العربية"
                 className="w-full h-48 object-cover hover:scale-105 transition-all duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-all duration-300 flex items-end p-3">
@@ -111,7 +119,7 @@ const About = () => {
 
             <div className="space-y-4">
               {stats.map((stat, index) => {
-                const IconComponent = stat.icon;
+                const IconComponent = stat.icon || FaUser;
                 return (
                   <motion.div
                     key={index}
@@ -125,7 +133,7 @@ const About = () => {
                     }`}
                   >
                     <div className="p-3 rounded-lg bg-gold/10 group-hover:bg-gold/20 transition-all duration-300">
-                      {IconComponent && <IconComponent className="text-2xl text-gold" />}
+                      <IconComponent className="text-2xl text-gold" />
                     </div>
                     <div>
                       <div className={`text-sm ${isDark ? 'text-textMuted' : 'text-theme-muted'}`}>

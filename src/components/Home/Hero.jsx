@@ -1,3 +1,4 @@
+// src/components/Home/Hero.jsx
 import { motion } from 'framer-motion';
 import { 
   FaWhatsapp, FaPhone, FaFacebook, FaInstagram, FaYoutube, 
@@ -12,6 +13,10 @@ const Hero = () => {
   const hero = siteData.hero || {};
   const settings = siteData.settings || {};
   const socialLinks = settings.socialLinks || {};
+  const about = siteData.about || {};
+  
+  // استخدام صورة البروفايل من معلومات المدرس
+  const profileImage = about.profileImage || 'https://ui-avatars.com/api/?name=محمد+أحمد+عرابى&size=400&background=1a1a1a&color=c9a84c';
   
   const socialButtons = [
     { icon: FaWhatsapp, url: socialLinks.whatsapp || 'https://wa.me/201140739030', color: '#25D366', label: 'واتساب' },
@@ -60,7 +65,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="hero-title gradient-premium mb-4"
             >
-              {hero.title || 'محمد أحمد عرابى'}
+              {hero.title || about.name || 'محمد أحمد عرابى'}
             </motion.h1>
 
             <motion.p
@@ -69,7 +74,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-2xl md:text-3xl text-gold font-semibold mb-4 calligraphy"
             >
-              {hero.subtitle || 'مدرس لغة عربية للمرحلة الإعدادية'}
+              {hero.subtitle || about.title || 'مدرس لغة عربية للمرحلة الإعدادية'}
             </motion.p>
 
             <motion.p
@@ -78,7 +83,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               className={`text-theme-secondary max-w-xl mr-auto mb-10 leading-relaxed text-base md:text-lg`}
             >
-              {hero.description || 'أهلاً بكم في موقعي التعليمي. هنا ستجدون كل ما تحتاجونه لإتقان اللغة العربية من شروحات، ملازم، وفيديوهات تعليمية متميزة.'}
+              {hero.description || about.description || 'أهلاً بكم في موقعي التعليمي. هنا ستجدون كل ما تحتاجونه لإتقان اللغة العربية من شروحات، ملازم، وفيديوهات تعليمية متميزة.'}
             </motion.p>
 
             <motion.div
@@ -139,11 +144,11 @@ const Hero = () => {
                 isDark ? '' : 'bg-white'
               }`}>
                 <img
-                  src="/assets/images/profile.jpg"
-                  alt="محمد أحمد عرابى"
+                  src={profileImage}
+                  alt={about.name || 'محمد أحمد عرابى'}
                   className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-all duration-700"
                   onError={(e) => {
-                    e.target.src = `https://ui-avatars.com/api/?name=محمد+أحمد+عرابى&size=400&background=1a1a1a&color=c9a84c`;
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(about.name || 'محمد أحمد عرابى')}&size=400&background=1a1a1a&color=c9a84c`;
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />

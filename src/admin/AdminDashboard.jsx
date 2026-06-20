@@ -10,7 +10,8 @@ import {
   FaWhatsapp, FaPhone, FaFacebook, FaInstagram, FaGlobe,
   FaHome, FaUpload, FaSpinner, FaCheck, FaEdit,
   FaToggleOn, FaToggleOff, FaStopwatch, FaUserPlus,
-  FaFileAlt, FaImage, FaVideo as FaVideoIcon
+  FaFileAlt, FaImage, FaVideo as FaVideoIcon,
+  FaCertificate, FaAward, FaStar, FaChalkboardTeacher
 } from 'react-icons/fa';
 import { useApp } from '../context/AppContext';
 import { toast } from 'react-hot-toast';
@@ -136,16 +137,44 @@ const DashboardStats = () => {
 };
 
 // ============================================
-// COMPONENT: ProfileManager (معلومات المدرس)
+// COMPONENT: ProfileManager (معلومات المدرس - كاملة)
 // ============================================
 const ProfileManager = () => {
   const { siteData, updateAbout, updateHero } = useApp();
   const [profileImage, setProfileImage] = useState(siteData.about?.profileImage || '');
+  
   const [aboutData, setAboutData] = useState({
     name: siteData.about?.name || '',
     title: siteData.about?.title || '',
     description: siteData.about?.description || '',
     profileImage: siteData.about?.profileImage || '',
+  });
+
+  // إحصائيات المدرس - قابلة للتعديل
+  const [aboutStats, setAboutStats] = useState(() => {
+    const stats = siteData.about?.stats || [
+      { icon: 'FaGraduationCap', label: 'المؤهل', value: 'ليسانس آداب - قسم اللغة العربية' },
+      { icon: 'FaChalkboardTeacher', label: 'الخبرة', value: '٥ سنوات في تدريس المرحلة الإعدادية' },
+      { icon: 'FaCertificate', label: 'الشهادات', value: 'دبلوم تربوي - متخصص في المناهج' },
+      { icon: 'FaAward', label: 'الإنجازات', value: 'حاصل على جائزة أفضل معلم لعام ٢٠٢٤' },
+    ];
+    return stats.map(s => ({
+      ...s,
+      icon: s.icon || 'FaUser'
+    }));
+  });
+
+  // إحصائيات الهيرو - قابلة للتعديل
+  const [heroStats, setHeroStats] = useState(() => {
+    const stats = siteData.hero?.stats || [
+      { icon: 'FaUsers', value: '+٥٠٠', label: 'طالب' },
+      { icon: 'FaBookOpen', value: '+١٠٠', label: 'فيديو شرح' },
+      { icon: 'FaStar', value: '+٥', label: 'سنوات خبرة' },
+    ];
+    return stats.map(s => ({
+      ...s,
+      icon: s.icon || 'FaUser'
+    }));
   });
 
   const handleImageUpload = (file) => {
@@ -155,14 +184,43 @@ const ProfileManager = () => {
   };
 
   const handleSave = () => {
-    updateAbout(aboutData);
-    toast.success('تم حفظ معلومات المدرس بنجاح!');
+    // حفظ كل البيانات بما فيها الإحصائيات
+    updateAbout({ 
+      ...aboutData, 
+      stats: aboutStats 
+    });
+    updateHero({
+      ...siteData.hero,
+      stats: heroStats
+    });
+    toast.success('تم حفظ جميع المعلومات بنجاح!');
   };
+
+  const iconOptions = [
+    { value: 'FaGraduationCap', label: '🎓 قبعة' },
+    { value: 'FaChalkboardTeacher', label: '👨‍🏫 معلم' },
+    { value: 'FaCertificate', label: '📜 شهادة' },
+    { value: 'FaAward', label: '🏆 جائزة' },
+    { value: 'FaBook', label: '📖 كتاب' },
+    { value: 'FaUser', label: '👤 مستخدم' },
+    { value: 'FaStar', label: '⭐ نجمة' },
+    { value: 'FaUsers', label: '👥 مستخدمين' },
+    { value: 'FaBookOpen', label: '📖 كتاب مفتوح' },
+  ];
+
+  const heroIconOptions = [
+    { value: 'FaUsers', label: '👥 مستخدمين' },
+    { value: 'FaBookOpen', label: '📖 كتاب مفتوح' },
+    { value: 'FaStar', label: '⭐ نجمة' },
+    { value: 'FaGraduationCap', label: '🎓 قبعة' },
+    { value: 'FaVideo', label: '🎬 فيديو' },
+  ];
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold gradient-premium calligraphy">معلومات المدرس</h2>
       
+      {/* معلومات المدرس الأساسية */}
       <div className="p-6 rounded-2xl glass-premium border border-gold/10">
         <div className="flex flex-col md:flex-row gap-8 items-start">
           <div className="flex-shrink-0">
@@ -171,6 +229,9 @@ const ProfileManager = () => {
                 src={profileImage || 'https://ui-avatars.com/api/?name=محمد+أحمد+عرابى&size=400&background=1a1a1a&color=c9a84c'}
                 alt="صورة المدرس"
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = `https://ui-avatars.com/api/?name=محمد+أحمد+عرابى&size=400&background=1a1a1a&color=c9a84c`;
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             </div>
@@ -212,15 +273,185 @@ const ProfileManager = () => {
                 className="w-full px-4 py-2 rounded-xl glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none resize-y"
               />
             </div>
-            <button
-              onClick={handleSave}
-              className="flex items-center gap-2 px-6 py-2 rounded-xl bg-gold/10 text-gold hover:bg-gold/20 transition-all duration-300"
-            >
-              <FaSave /> حفظ
-            </button>
           </div>
         </div>
       </div>
+
+      {/* إحصائيات المدرس - قسم "عن المدرس" */}
+      <div className="p-6 rounded-2xl glass-premium border border-gold/10">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-theme-primary">
+            <FaUsers className="inline ml-2 text-gold" />
+            إحصائيات المدرس (تظهر في قسم "عن المدرس")
+          </h3>
+          <button
+            onClick={() => {
+              setAboutStats([...aboutStats, { icon: 'FaUser', label: '', value: '' }]);
+            }}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gold/10 text-gold hover:bg-gold/20 transition-all duration-300 text-sm"
+          >
+            <FaPlus /> إضافة
+          </button>
+        </div>
+        
+        <div className="space-y-3">
+          {aboutStats.map((stat, index) => (
+            <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center p-3 rounded-xl bg-white/5">
+              <div>
+                <select
+                  value={stat.icon || 'FaUser'}
+                  onChange={(e) => {
+                    const newStats = [...aboutStats];
+                    newStats[index].icon = e.target.value;
+                    setAboutStats(newStats);
+                  }}
+                  className="w-full px-3 py-2 rounded-lg glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none text-sm"
+                >
+                  {iconOptions.map(icon => (
+                    <option key={icon.value} value={icon.value}>{icon.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <input
+                  type="text"
+                  value={stat.label}
+                  onChange={(e) => {
+                    const newStats = [...aboutStats];
+                    newStats[index].label = e.target.value;
+                    setAboutStats(newStats);
+                  }}
+                  className="w-full px-3 py-2 rounded-lg glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none text-sm"
+                  placeholder="التصنيف (مثال: المؤهل)"
+                />
+              </div>
+              <div className="md:col-span-1">
+                <input
+                  type="text"
+                  value={stat.value}
+                  onChange={(e) => {
+                    const newStats = [...aboutStats];
+                    newStats[index].value = e.target.value;
+                    setAboutStats(newStats);
+                  }}
+                  className="w-full px-3 py-2 rounded-lg glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none text-sm"
+                  placeholder="القيمة (مثال: ليسانس آداب)"
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => {
+                    if (aboutStats.length > 1) {
+                      const newStats = aboutStats.filter((_, i) => i !== index);
+                      setAboutStats(newStats);
+                    } else {
+                      toast.error('لا يمكن حذف آخر إحصائية');
+                    }
+                  }}
+                  className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-300"
+                >
+                  <FaTrash className="text-xs" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-theme-muted mt-3">
+          💡 هذه الإحصائيات تظهر في قسم "عن المدرس" في الموقع
+        </p>
+      </div>
+
+      {/* إحصائيات الهيرو - تظهر في الصفحة الرئيسية */}
+      <div className="p-6 rounded-2xl glass-premium border border-gold/10">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-theme-primary">
+            <FaStar className="inline ml-2 text-gold" />
+            إحصائيات الصفحة الرئيسية (تظهر في الهيرو)
+          </h3>
+          <button
+            onClick={() => {
+              setHeroStats([...heroStats, { icon: 'FaUser', value: '', label: '' }]);
+            }}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gold/10 text-gold hover:bg-gold/20 transition-all duration-300 text-sm"
+          >
+            <FaPlus /> إضافة
+          </button>
+        </div>
+        
+        <div className="space-y-3">
+          {heroStats.map((stat, index) => (
+            <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center p-3 rounded-xl bg-white/5">
+              <div>
+                <select
+                  value={stat.icon || 'FaUser'}
+                  onChange={(e) => {
+                    const newStats = [...heroStats];
+                    newStats[index].icon = e.target.value;
+                    setHeroStats(newStats);
+                  }}
+                  className="w-full px-3 py-2 rounded-lg glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none text-sm"
+                >
+                  {heroIconOptions.map(icon => (
+                    <option key={icon.value} value={icon.value}>{icon.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <input
+                  type="text"
+                  value={stat.value}
+                  onChange={(e) => {
+                    const newStats = [...heroStats];
+                    newStats[index].value = e.target.value;
+                    setHeroStats(newStats);
+                  }}
+                  className="w-full px-3 py-2 rounded-lg glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none text-sm"
+                  placeholder="القيمة (مثال: +٥٠٠)"
+                />
+              </div>
+              <div className="md:col-span-1">
+                <input
+                  type="text"
+                  value={stat.label}
+                  onChange={(e) => {
+                    const newStats = [...heroStats];
+                    newStats[index].label = e.target.value;
+                    setHeroStats(newStats);
+                  }}
+                  className="w-full px-3 py-2 rounded-lg glass-premium border border-white/5 focus:border-gold/30 transition-all duration-300 text-theme-primary outline-none text-sm"
+                  placeholder="التصنيف (مثال: طالب)"
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => {
+                    if (heroStats.length > 1) {
+                      const newStats = heroStats.filter((_, i) => i !== index);
+                      setHeroStats(newStats);
+                    } else {
+                      toast.error('لا يمكن حذف آخر إحصائية');
+                    }
+                  }}
+                  className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-300"
+                >
+                  <FaTrash className="text-xs" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-theme-muted mt-3">
+          💡 هذه الإحصائيات تظهر في الصفحة الرئيسية (قسم الهيرو)
+        </p>
+      </div>
+
+      {/* زر الحفظ الرئيسي */}
+      <button
+        onClick={handleSave}
+        className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gold text-black font-bold hover:shadow-xl hover:shadow-gold/20 transition-all duration-300"
+      >
+        <FaSave /> حفظ جميع التغييرات
+      </button>
     </div>
   );
 };
@@ -979,7 +1210,7 @@ const ExamsManager = () => {
     icon: '📝',
     color: 'from-amber-500/20 to-amber-600/10',
     questions: [],
-    duration: 30, // المدة بالدقائق
+    duration: 30,
     isActive: true,
     requiresName: true,
   });
