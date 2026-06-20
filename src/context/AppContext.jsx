@@ -1,3 +1,4 @@
+// src/context/AppContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   FaUsers, FaBookOpen, FaStar, FaGraduationCap, 
@@ -7,12 +8,13 @@ import {
 
 const AppContext = createContext();
 
-// البيانات الافتراضية مع الأيقونات كـ Components حقيقية
+// البيانات الافتراضية
 const defaultData = {
   about: {
     name: 'محمد أحمد عرابى',
     title: 'مدرس لغة عربية للمرحلة الإعدادية',
     description: 'معلم لغة عربية متخصص في تدريس المرحلة الإعدادية. أؤمن بأن اللغة العربية هي هويتنا ووسيلة التواصل الحضاري، وأسعى دائماً لتقديم محتوى تعليمي متميز يجمع بين الأصالة والمعاصرة.',
+    profileImage: '',
     stats: [
       { icon: FaGraduationCap, label: 'المؤهل', value: 'ليسانس آداب - قسم اللغة العربية' },
       { icon: FaChalkboardTeacher, label: 'الخبرة', value: '٥ سنوات في تدريس المرحلة الإعدادية' },
@@ -59,236 +61,11 @@ const defaultData = {
       gradient: 'from-purple-400 to-purple-600',
     },
   ],
-  videos: [
-    {
-      id: 1,
-      title: 'شرح درس النحو - الجملة الاسمية',
-      description: 'تعلم قواعد الجملة الاسمية في النحو العربي مع أمثلة تطبيقية',
-      duration: '٢٠:٣٠',
-      views: '١.٢٥٠',
-      likes: '٨٩',
-      category: 'نحو',
-      date: '٢٠٢٤-٠١-١٥',
-      youtubeId: 'dQw4w9WgXcQ',
-      teacher: 'محمد عرلبي',
-    },
-    {
-      id: 2,
-      title: 'شرح درس البلاغة - التشبيه',
-      description: 'فهم أنواع التشبيه وأركانه مع تطبيقات من القرآن الكريم',
-      duration: '١٨:٤٥',
-      views: '٩٨٠',
-      likes: '٦٧',
-      category: 'بلاغة',
-      date: '٢٠٢٤-٠١-٢٠',
-      youtubeId: 'dQw4w9WgXcQ',
-      teacher: 'محمد عرلبي',
-    },
-    {
-      id: 3,
-      title: 'شرح درس الإملاء - الهمزة',
-      description: 'قواعد كتابة الهمزة في مختلف مواضع الكلمة',
-      duration: '١٥:٢٠',
-      views: '١.١٠٠',
-      likes: '٧٨',
-      category: 'إملاء',
-      date: '٢٠٢٤-٠١-٢٥',
-      youtubeId: 'dQw4w9WgXcQ',
-      teacher: 'محمد عرلبي',
-    },
-    {
-      id: 4,
-      title: 'شرح درس النحو - المعرب والمبني',
-      description: 'تعرف على الفرق بين الأسماء المعربة والمبنية مع أمثلة',
-      duration: '٢٢:١٠',
-      views: '٧٥٠',
-      likes: '٥٦',
-      category: 'نحو',
-      date: '٢٠٢٤-٠٢-٠١',
-      youtubeId: 'dQw4w9WgXcQ',
-      teacher: 'محمد عرلبي',
-    },
-    {
-      id: 5,
-      title: 'شرح درس البلاغة - الاستعارة',
-      description: 'فهم الاستعارة وأنواعها مع تطبيقات من الأدب العربي',
-      duration: '١٩:٤٠',
-      views: '٨٢٠',
-      likes: '٦٣',
-      category: 'بلاغة',
-      date: '٢٠٢٤-٠٢-٠٥',
-      youtubeId: 'dQw4w9WgXcQ',
-      teacher: 'محمد عرلبي',
-    },
-    {
-      id: 6,
-      title: 'شرح درس الإملاء - التاء المربوطة والتاء المفتوحة',
-      description: 'تعلم الفرق بين التاء المربوطة والمفتوحة مع تدريبات تطبيقية',
-      duration: '١٦:٥٠',
-      views: '٩٣٠',
-      likes: '٧١',
-      category: 'إملاء',
-      date: '٢٠٢٤-٠٢-١٠',
-      youtubeId: 'dQw4w9WgXcQ',
-      teacher: 'محمد عرلبي',
-    },
-  ],
-  materials: [
-    {
-      id: 1,
-      title: 'ملزمة النحو - الجزء الأول',
-      size: '٥ ميجابايت',
-      category: 'نحو',
-      date: '٢٠٢٤-٠١-١٥',
-      downloads: 250,
-    },
-    {
-      id: 2,
-      title: 'ملزمة النحو - الجزء الثاني',
-      size: '٦ ميجابايت',
-      category: 'نحو',
-      date: '٢٠٢٤-٠٢-٠١',
-      downloads: 180,
-    },
-    {
-      id: 3,
-      title: 'ملزمة البلاغة - الجزء الأول',
-      size: '٤ ميجابايت',
-      category: 'بلاغة',
-      date: '٢٠٢٤-٠١-٢٠',
-      downloads: 200,
-    },
-    {
-      id: 4,
-      title: 'ملزمة البلاغة - الجزء الثاني',
-      size: '٥ ميجابايت',
-      category: 'بلاغة',
-      date: '٢٠٢٤-٠٢-١٠',
-      downloads: 150,
-    },
-    {
-      id: 5,
-      title: 'ملزمة الإملاء - الجزء الأول',
-      size: '٣ ميجابايت',
-      category: 'إملاء',
-      date: '٢٠٢٤-٠١-٢٥',
-      downloads: 320,
-    },
-    {
-      id: 6,
-      title: 'ملزمة الإملاء - الجزء الثاني',
-      size: '٤ ميجابايت',
-      category: 'إملاء',
-      date: '٢٠٢٤-٠٢-١٥',
-      downloads: 210,
-    },
-  ],
-  gallery: [
-    {
-      id: 1,
-      title: 'مع الطلاب',
-      category: 'طلاب',
-      date: '٢٠٢٤',
-      src: '/assets/images/with-students/1.jpg',
-    },
-    {
-      id: 2,
-      title: 'في الفصل',
-      category: 'تدريس',
-      date: '٢٠٢٤',
-      src: '/assets/images/with-students/2.jpg',
-    },
-    {
-      id: 3,
-      title: 'ورشة عمل',
-      category: 'ورش',
-      date: '٢٠٢٣',
-      src: '/assets/images/with-students/3.jpg',
-    },
-    {
-      id: 4,
-      title: 'تكريم',
-      category: 'إنجازات',
-      date: '٢٠٢٤',
-      src: '/assets/images/with-students/4.jpg',
-    },
-    {
-      id: 5,
-      title: 'رحلة تعليمية',
-      category: 'رحلات',
-      date: '٢٠٢٣',
-      src: '/assets/images/with-students/5.jpg',
-    },
-    {
-      id: 6,
-      title: 'يوم التميز',
-      category: 'إنجازات',
-      date: '٢٠٢٤',
-      src: '/assets/images/with-students/6.jpg',
-    },
-  ],
-  exams: [
-    {
-      id: 1,
-      title: 'امتحان النحو',
-      description: 'اختبر معلوماتك في قواعد النحو',
-      icon: '📝',
-      color: 'from-amber-500/20 to-amber-600/10',
-      questions: [
-        {
-          id: 'q1',
-          question: 'ما هو الفاعل في الجملة: "قرأ الطالب الكتاب"؟',
-          options: ['الطالب', 'الكتاب', 'قرأ', 'لا يوجد'],
-          correct: 0,
-        },
-        {
-          id: 'q2',
-          question: 'أي من التالي يعتبر فعلاً ماضياً؟',
-          options: ['يكتب', 'كتب', 'سيكتب', 'اكتب'],
-          correct: 1,
-        },
-        {
-          id: 'q3',
-          question: 'ما هو إعراب كلمة "الكتاب" في الجملة السابقة؟',
-          options: ['فاعل مرفوع', 'مفعول به منصوب', 'مضاف إليه مجرور', 'خبر مرفوع'],
-          correct: 1,
-        },
-        {
-          id: 'q4',
-          question: 'أي من الأسماء التالية يعتبر اسماً مبنياً؟',
-          options: ['محمد', 'هذا', 'كتاب', 'بيت'],
-          correct: 1,
-        },
-        {
-          id: 'q5',
-          question: 'ما هو جمع كلمة "عالم"؟',
-          options: ['عالمون', 'علماء', 'عالِمين', 'عالمات'],
-          correct: 1,
-        },
-      ],
-    },
-    {
-      id: 2,
-      title: 'امتحان البلاغة',
-      description: 'اختبر فهمك لعلم البلاغة',
-      icon: '🎭',
-      color: 'from-emerald-500/20 to-emerald-600/10',
-      questions: [
-        {
-          id: 'q1',
-          question: 'ما هو التشبيه في قول الشاعر: "وجهه كالبدر"؟',
-          options: ['تشبيه بليغ', 'تشبيه تمثيلي', 'تشبيه مجمل', 'تشبيه مفصل'],
-          correct: 0,
-        },
-        {
-          id: 'q2',
-          question: 'ما هي الاستعارة في قولنا: "رأيت الأسد يخطب"؟',
-          options: ['استعارة تصريحية', 'استعارة مكنية', 'استعارة تمثيلية', 'ليس استعارة'],
-          correct: 1,
-        },
-      ],
-    },
-  ],
+  videos: [],
+  materials: [],
+  gallery: [],
+  exams: [],
+  examResults: [],
   settings: {
     siteName: 'محمد أحمد عرابى',
     siteDescription: 'مدرس لغة عربية للمرحلة الإعدادية',
@@ -305,7 +82,7 @@ const defaultData = {
 };
 
 export const AppProvider = ({ children }) => {
-  // دالة لاستخراج معرف فيديو يوتيوب الصحيح من أي رابط أو ID مخزن (حتى لو كان مخزن غلط من قبل)
+  // دالة لاستخراج معرف يوتيوب
   const extractYoutubeId = (input) => {
     if (!input) return '';
     const trimmed = String(input).trim();
@@ -319,7 +96,6 @@ export const AppProvider = ({ children }) => {
       const saved = localStorage.getItem('siteData');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // دمج البيانات مع الافتراضية
         const mergedVideos = (parsed.videos || defaultData.videos).map(video => ({
           ...video,
           youtubeId: extractYoutubeId(video.youtubeId),
@@ -327,8 +103,6 @@ export const AppProvider = ({ children }) => {
         return {
           ...defaultData,
           ...parsed,
-          // ملاحظة: stats بتاعة about/hero فيها أيقونات (React components) مش قابلة للتخزين في JSON
-          // فبيتم حذفها تلقائيًا من localStorage بعد أول حفظ، فلازم نرجّعها دايمًا من defaultData
           about: { ...defaultData.about, ...parsed.about, stats: defaultData.about.stats },
           hero: { ...defaultData.hero, ...parsed.hero, stats: defaultData.hero.stats },
           courses: parsed.courses || defaultData.courses,
@@ -336,6 +110,7 @@ export const AppProvider = ({ children }) => {
           materials: parsed.materials || defaultData.materials,
           gallery: parsed.gallery || defaultData.gallery,
           exams: parsed.exams || defaultData.exams,
+          examResults: parsed.examResults || [],
           settings: { ...defaultData.settings, ...parsed.settings },
         };
       }
@@ -520,7 +295,7 @@ export const AppProvider = ({ children }) => {
     setSiteData(prev => {
       const newData = {
         ...prev,
-        exams: [...prev.exams, { ...exam, id: Date.now() }]
+        exams: [...prev.exams, { ...exam, id: Date.now(), results: [] }]
       };
       localStorage.setItem('siteData', JSON.stringify(newData));
       return newData;
@@ -544,6 +319,21 @@ export const AppProvider = ({ children }) => {
         ...prev,
         exams: prev.exams.filter(e => e.id !== id)
       };
+      localStorage.setItem('siteData', JSON.stringify(newData));
+      return newData;
+    });
+  };
+
+  const addExamResult = (examId, result) => {
+    setSiteData(prev => {
+      const exams = prev.exams.map(e => {
+        if (e.id === examId) {
+          const results = [...(e.results || []), { ...result, date: new Date().toISOString() }];
+          return { ...e, results };
+        }
+        return e;
+      });
+      const newData = { ...prev, exams };
       localStorage.setItem('siteData', JSON.stringify(newData));
       return newData;
     });
@@ -609,6 +399,7 @@ export const AppProvider = ({ children }) => {
       addExam,
       updateExam,
       deleteExam,
+      addExamResult,
       updateSettings,
       login,
       logout,
